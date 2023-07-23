@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "type": "flask",
+            "name": "Run Flask app",
+            "target": "srv/app.py",
+            "arguments": [
+                "--host",
+                "::"
+            ]
+        },
+        {
+            "type": "command",
+            "name": "Compile",
+            "program": "make"
+        }
+    ]
+}

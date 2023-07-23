@@ -1,0 +1,22 @@
+{
+    "enable_host_ipv6": true,
+    "port": 80,
+    "instance_name": "SSVP Instance",
+    "splash": "Server Status Dashboard",
+    "servers": {
+        "_example": {
+            "ip": "10.0.0.1",
+            "module": "ping"
+        }
+    },
+    "services": {},
+    "database": {
+        "type": "mysql",
+        "host": "10.0.0.2",
+        "port": 3306,
+        "username": "ssvp",
+        "password": "ssvp-demo",
+        "database": "ssvp",
+        "prefix": "ssvp_"
+    }
+}

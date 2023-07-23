@@ -1,0 +1,12 @@
+.DS_Store
+.idea
+*.log
+tmp/
+node_modules/
+*.css
+venv/
+__pycache__/
+ssvp-config.json
+.sass-cache/
+*.css.map
+*.js

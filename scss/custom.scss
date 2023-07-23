@@ -1,0 +1,60 @@
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+body {
+    padding-top: 5rem;
+    padding-bottom: 10rem;
+}
+
+.table-uptime-element {
+    @extend .mb-0;
+}
+
+.unpadded-table {
+    @extend .mb-0;
+    @extend .table;
+}
+
+.half-width {
+    width: 50%;
+}
+
+.third-width {
+    width: calc(100% / 3);
+}
+
+.indic-0 {
+    //fill: #60a561;
+    fill: var(--bs-success);
+}
+
+.indic-1 {
+    //fill: #ffb140;
+    fill: var(--bs-warning);
+}
+
+.indic-2 {
+    //fill: #e85f5c;
+    fill: var(--bs-danger);
+}
+
+.indic--1 {
+    //fill: #b6b8dc;
+    fill: var(--bs-tertiary-color);
+}
+
+.nav-item {
+    @extend .ps-4;
+}
+
+#gh-logo {
+    filter: invert(100%);
+}
+
+#instance-table {
+    border-collapse: separate;
+    border-spacing: 2rem;
+}
+
+.a-fc-0 {
+    
+}

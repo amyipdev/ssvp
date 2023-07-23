@@ -1,0 +1,188 @@
+const EXPANSION_SIZE: number = 1280;
+const SINGLE_MONTH_SHIFT: number = 800;
+const DOUBLE_MONTH_SHIFT: number = 1920;
+const PCT_BREAKDOWN_SPLIT: number = 720;
+const PCT_BREAKDOWN_SPLIT_TWO: number = 1366;
+const DSF: number = 5;
+
+// TODO: internationalization of strings in here
+let serverListExpanded: number = getDisplayCategory();
+let listOfServers: Array<string>;
+let serverInfoList: Array<ServerInfo> = [];
+
+async function serverListInitialization() {
+    const r = await fetch("/api/v1/servers");
+    listOfServers = await r.json();
+    for (const srv of listOfServers) {
+        const sr = await fetch("/api/v1/uptime/" + srv);
+        serverInfoList.push(await sr.json());
+    }
+    let box: HTMLElement = document.getElementById("totality-indic");
+    // when services are implemented,
+    // add an && clause for servicesList.every
+    let mx: number = 0;
+    for (const e of serverInfoList) {
+        mx = Math.max(mx, e.current_status);
+    }
+    switch (mx) {
+        case 0:
+            box.innerHTML = "All Systems Operational";
+            box.classList.add("bg-success");
+            break;
+        case 1:
+            box.innerHTML = "Non-Critical Event";
+            box.classList.add("bg-warning");
+            break;
+        case 2:
+            box.innerHTML = "Critical Failure";
+            box.classList.add("bg-danger");
+            break;
+        default:
+            box.innerHTML = "(unknown error)";
+            box.classList.add("bg-body-tertiary")
+    }
+    generate_table();
+}
+
+serverListInitialization();
+
+enum DailyInfo {
+    Operational = 0,
+    NonCriticalEvent = 1,
+    CriticalFailure = 2,
+    UnknownStatus = -1
+}
+
+function dailyinfo_tostring(di: DailyInfo): string {
+    switch (di) {
+        case DailyInfo.Operational:
+            return "Operational";
+        case DailyInfo.CriticalFailure:
+            return "Critical Failure";
+        case DailyInfo.NonCriticalEvent:
+            return "Non-Critical Event";
+        case DailyInfo.UnknownStatus:
+            return "Unknown Status";
+        default:
+            return "(site error)";
+    }
+}
+
+interface ServerInfo {
+    monthly_uptime: number;
+    yearly_uptime: number;
+    alltime_uptime: number;
+    current_status: DailyInfo;
+    daily_types: Array<DailyInfo>;
+}
+
+function gen_pct_string(pct: number, sf: number): string {
+    return (Math.round(pct * (10**(sf+2))) / (10**sf)).toString() + "%";
+}
+
+function convertFontColor(ss: DailyInfo): string {
+    switch (ss) {
+        case DailyInfo.Operational:
+            return "text-success";
+        case DailyInfo.NonCriticalEvent:
+            return "text-warning";
+        case DailyInfo.CriticalFailure:
+            return "text-danger";
+        default:
+            return "text-body-tertiary";
+    }
+}
+
+function generate_table(): void {
+    let builder: string = "<table class=\"table\" id=\"instance-table\">";
+    let sp: number = 0; // string pointer
+    const mc: number = serverListExpanded > 2 ? 2 : 1; // max count per row
+    const ll = listOfServers.length;
+    const numBars: number = (window.innerWidth < SINGLE_MONTH_SHIFT ? 30 :
+                                (window.innerWidth < DOUBLE_MONTH_SHIFT ? 60 : 90));
+    const adj: number = 90 - numBars;
+    while (sp < ll) {
+        builder += "<tr>";
+        for (let p: number = 0; p < mc; ++p) {
+            if (sp >= ll)
+                break;
+            // TODO: convert this all into a single backtick string
+            const ss: DailyInfo = serverInfoList[sp].current_status;
+            builder += `
+                <th class="px-4 bg-body-tertiary w-50 rounded-4">
+                    <div class="table-responsive">
+                        <table class="unpadded-table">
+                            <tr class="bg-body-tertiary border-0">
+                                <th class="half-width bg-body-tertiary border-0">${listOfServers[sp]}</th>
+                                <th class="half-width bg-body-tertiary ${convertFontColor(ss)} text-end border-0">${dailyinfo_tostring(ss)}</th>
+                            </tr>
+                        </table>
+                    </div>
+                    <svg class="my-2" preserveAspectRatio="none" viewBox="0 0 ${numBars*5-2} 35">`
+            for (let j: number = 0; j < numBars; ++j) {
+                builder += `<rect rx="2" class="indic-${serverInfoList[sp].daily_types[j+adj]}" height="35" width="3" x="${5*j}" y="0"></rect>`
+            }
+            builder += `
+                    </svg>
+                    <div class="table-responsive border-0">
+                        <table class="unpadded-table border-0">
+                            <tr class="bg-body-tertiary border-0">`;
+            for (const e of [["Monthly", serverInfoList[sp].monthly_uptime],
+                             ["Yearly", serverInfoList[sp].yearly_uptime],
+                             ["All-time", serverInfoList[sp].alltime_uptime]]) {
+                // We can ignore here, because e[1] is guaranteed to be 'number'
+                // Would type-annotate e, but we can't, since it's in a for-of
+                // TODO: see if there's a way to type-annotate a for-each
+                // @ts-ignore
+                const pct: number = gen_pct_string(e[1], DSF);
+                const inside: string = (window.innerWidth >= PCT_BREAKDOWN_SPLIT)
+                                        ?  `<div class="table-responsive border-0">
+                                                <table class="unpadded-table border-0">
+                                                    <tr class="bg-body-tertiary border-0">
+                                                        <th class="half-width bg-body-tertiary border-0"><p class="table-uptime-element text-start">${e[0]}</p></th>
+                                                        <th class="half-width bg-body-tertiary border-0"><p class="table-uptime-element text-end">${pct}</p></th>
+                                                    </tr>
+                                                </table>
+                                            </div>`
+                                        : `<p class="table-uptime-element text-center">${e[0]}<br>${pct}</p>`;
+                builder += `<th class="border-0 bg-body-tertiary">${inside}</th>`;
+            }
+            builder += `
+                            </tr>
+                        </table>
+                    </div>                                                       
+                </th>
+            `
+            ++sp;
+        }
+        builder += "</tr>"
+    }
+    builder += "</table>";
+    document.getElementById("table-gen").innerHTML = builder;
+}
+
+function getDisplayCategory(): number {
+    const w = window.innerWidth;
+    if (w < PCT_BREAKDOWN_SPLIT)
+        return 0;
+    if (w < SINGLE_MONTH_SHIFT)
+        return 1;
+    if (w < EXPANSION_SIZE)
+        return 2;
+    if (w < PCT_BREAKDOWN_SPLIT_TWO)
+        return 3;
+    if (w < DOUBLE_MONTH_SHIFT)
+        return 4;
+    return 5;
+}
+
+// We only need to actually change anything if the viewport changes
+function detectViewportChange(): void {
+    let new_check: number = getDisplayCategory();
+    if (serverListExpanded != new_check) {
+        serverListExpanded = new_check;
+        generate_table();
+    }
+}
+
+window.onresize = detectViewportChange;
