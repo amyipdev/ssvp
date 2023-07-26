@@ -70,7 +70,7 @@ class DBAPIAbstracted(DBAbstract):
         unimplemented()
 
     def _treat_sql(self, sql: str) -> str:
-        return ""
+        return sql
 
     def _fetch_daily_data(self, srv: str) -> dict:
         return self._fdd(srv=srv, conn=self._generate_connection())
