@@ -33,8 +33,10 @@ let listOfServers: Array<string>;
 let serverInfoList: Array<ServerInfo> = [];
 
 async function serverListInitialization() {
-    const r = await fetch("/api/v1/servers");
-    listOfServers = await r.json();
+    if (typeof listOfServers === "undefined") {
+        const r = await fetch("/api/v1/servers");
+        listOfServers = await r.json();
+    }
     for (const srv of listOfServers) {
         const sr = await fetch("/api/v1/uptime/" + srv);
         serverInfoList.push(await sr.json());
@@ -208,3 +210,14 @@ function detectViewportChange(): void {
 }
 
 window.onresize = detectViewportChange;
+
+// We could just refresh the page, which would reload everything.
+// However, it's much more efficient to just re-request the API data
+function refreshOnInterval(): void {
+    // This is perfectly valid code, but ts doesn't like the type issues
+    // Thus, we must:
+    // @ts-ignore
+    serverListInitialization();
+}
+
+setInterval(refreshOnInterval, 60000);
