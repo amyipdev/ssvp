@@ -18,34 +18,9 @@
 -- 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA or visit the
 -- GNU Project at https:--gnu.org/licenses. The GNU Affero General Public
 -- License version 3 is available at, for your convenience,
--- https:--www.gnu.org/licenses/agpl-3.0.en.html. 
+-- https:--www.gnu.org/licenses/agpl-3.0.en.html.
 
-create database ssvp;
-grant all privileges on ssvp.* to 'ssvp'@'%' identified by 'ssvp-demo';
-use ssvp;
-create table ssvp_day_logs (
-    logDate date not null,
-    serverName text not null,
-    serverStatus integer not null
-);
-create table ssvp_interval_logs (
-    logDate datetime not null,
-    serverName text not null,
-    serverStatus boolean not null
-);
-create table ssvp_cached_stats (
-    monthlyUptime double not null,
-    yearlyUptime double not null,
-    allTimeUptime double not null,
-    serverName text not null,
-    currentStatus integer not null
-);
-create table ssvp_events (
-    eventID integer not null,
-    serverName text not null,
-    eventName text not null,
-    eventDescription text,
-    startTime datetime not null,
-    endTime datetime,
-    severity integer not null
-);
+create table ssvp_day_logs ( logDate date not null, serverName text not null, serverStatus integer not null );
+create table ssvp_interval_logs ( logDate datetime not null, serverName text not null, serverStatus boolean not null );
+create table ssvp_cached_stats ( monthlyUptime double not null, yearlyUptime double not null, allTimeUptime double not null, serverName text not null, currentStatus integer not null );
+create table ssvp_events ( eventID integer not null, serverName text not null, eventName text not null, eventDescription text, startTime datetime not null, endTime datetime, severity integer not null );

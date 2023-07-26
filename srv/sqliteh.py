@@ -22,15 +22,58 @@
 
 import dbhandle
 import sqlite3
-
 import datetime
 
 
-class SQLite3Handler(dbhandle.DBAbstract):
+class SQLite3Handler(dbhandle.DBAPIAbstracted):
     def __init__(self, config: dict) -> None:
-        super().__init__(config=config)
+        super().__init__(config=config, prefix=config["prefix"])
         self.filename = config["host"]
-        self.db = config["database"]
-        self.p = config["prefix"]
         
+    def _generate_connection(self):
+        # TODO: have filename search the current directory, not the cwd
+        return sqlite3.connect(self.filename)
     
+    def _treat_sql(self, sql: str):
+        return sql.replace("%s", "?")
+
+    def _fetch_daily_data(self, srv: str) -> dict:
+        conn = self._generate_connection()
+        curr = conn.cursor()
+        sql = f"select logDate, serverStatus \
+                from {self.p}day_logs \
+                where logDate > date('now', '-3 months')\
+                    and serverName = ?;"
+        curr.execute(sql, (srv,))
+        res = {}
+        for row in curr.fetchall():
+            res[datetime.datetime.strptime(row[0], "%Y-%m-%d").date()] = row[1]
+        curr.close()
+        conn.close()
+        return res
+
+    def update_cached_stats(self, srv: str, st: int) -> None:
+        conn = self._generate_connection()
+        curr = conn.cursor()
+        sql = f"update {self.p}cached_stats \
+                set monthlyUptime = \
+                    (select AVG(NOT serverStatus) \
+                     from {self.p}interval_logs \
+                     where logDate > date('now', '-1 month') \
+                        and serverName = %s), \
+                    yearlyUptime = \
+                    (select AVG(NOT serverStatus) \
+                     from {self.p}interval_logs \
+                     where logDate > date('now', '-1 year') \
+                        and serverName = %s), \
+                    allTimeUptime = \
+                    (select AVG(NOT serverStatus) \
+                     from {self.p}interval_logs \
+                     where serverName = %s), \
+                    currentStatus = %s\
+                where serverName = %s;"
+        curr.execute(self._treat_sql(sql), (srv, srv, srv, st, srv))
+        curr.fetchall()
+        conn.commit()
+        curr.close()
+        conn.close()
