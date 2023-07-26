@@ -10,3 +10,4 @@ ssvp-config.json
 .sass-cache/
 *.css.map
 *.js
+*.db
