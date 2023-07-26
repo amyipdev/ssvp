@@ -21,9 +21,11 @@
 # https://www.gnu.org/licenses/agpl-3.0.en.html. 
 
 import mysqlh
+import sqliteh
 
 dblookup = {
-    "mysql": mysqlh.MySQLHandler    
+    "mysql": mysqlh.MySQLHandler,
+    "sqlite3": sqliteh.SQLite3Handler
 }
 
 

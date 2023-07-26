@@ -32,24 +32,9 @@ class MySQLHandler(dbhandle.DBAPIAbstracted):
         self.login = config["username"]
         self.pw = config["password"]
         self.db = config["database"]
-    
-    def get_uptime_stats(self, srv: str) -> dict:
-        return self._get_ups(srv=srv, conn=self._generate_connection())
             
     def _generate_connection(self):
         return mysql.connector.connect(user=self.login,
                                        password=self.pw,
                                        host=self.host,
                                        database=self.db)
-    
-    def _fetch_daily_data(self, srv: str) -> dict:
-        return self._fdd(srv=srv, conn=self._generate_connection())
-
-    def handle_daily_record(self, srv: str, st: int) -> int:
-        return self._hdr(srv=srv, st=st, conn=self._generate_connection())
-
-    def insert_interval_log(self, srv: str, status: int) -> None:
-        self._iil(srv=srv, status=status, conn=self._generate_connection())
-        
-    def update_cached_stats(self, srv: str, st: int) -> None:
-        self._ucs(srv=srv, st=st, conn=self._generate_connection())
