@@ -11,3 +11,4 @@ ssvp-config.json
 *.css.map
 *.js
 *.db
+target/
