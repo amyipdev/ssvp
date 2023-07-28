@@ -59,12 +59,12 @@ class SQLite3Handler(dbhandle.DBAPIAbstracted):
                 set monthlyUptime = \
                     (select AVG(NOT serverStatus) \
                      from {self.p}interval_logs \
-                     where logDate > date('now', '-1 month') \
+                     where logDate > datetime('now', '-1 month') \
                         and serverName = %s), \
                     yearlyUptime = \
                     (select AVG(NOT serverStatus) \
                      from {self.p}interval_logs \
-                     where logDate > date('now', '-1 year') \
+                     where logDate > datetime('now', '-1 year') \
                         and serverName = %s), \
                     allTimeUptime = \
                     (select AVG(NOT serverStatus) \

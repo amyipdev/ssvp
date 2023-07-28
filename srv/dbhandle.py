@@ -178,13 +178,13 @@ class DBAPIAbstracted(DBAbstract):
                     (select AVG(NOT serverStatus) \
                      from {self.p}interval_logs \
                      where logDate between \
-                        (CURRENT_DATE() - interval 1 month) and CURRENT_DATE() \
+                        (NOW() - interval 1 month) and NOW() \
                         and serverName = %s), \
                     yearlyUptime = \
                     (select AVG(NOT serverStatus) \
                      from {self.p}interval_logs \
                      where logDate between \
-                        (CURRENT_DATE() - interval 1 year) and CURRENT_DATE() \
+                        (NOW() - interval 1 year) and NOW() \
                         and serverName = %s), \
                     allTimeUptime = \
                     (select AVG(NOT serverStatus) \
