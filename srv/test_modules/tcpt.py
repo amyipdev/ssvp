@@ -23,11 +23,11 @@
 import socket
 
 
-def ssvplwc_t(srv: dict) -> bool:
+def tcp_t(srv: dict) -> bool:
+    ss = socket.socket()
     try:
-        ss = socket.socket()
         ss.connect((srv["ip"], int(srv["args"])))
-        b = ss.recv(2048)
-        return b == b"ssvp-ok"
-    except ConnectionError:
+        ss.close()
+        return True
+    except ConnectionRefusedError:
         return False
