@@ -30,3 +30,5 @@ all:
 	$(SASS) scss/custom.scss:assets/css/custom_bootstrap.css $(SASS_OPTIONS)
 	$(MAKE) -C js
 	
+ssvplwc:
+	cd srv/ssvplwc; cargo run --release
