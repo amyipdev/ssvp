@@ -52,6 +52,7 @@ class SQLite3Handler(dbhandle.DBAPIAbstracted):
         conn.close()
         return res
 
+    # TODO: pre-treat instead of live-treating this sql
     def update_cached_stats(self, srv: str, st: int) -> None:
         conn = self._generate_connection()
         curr = conn.cursor()

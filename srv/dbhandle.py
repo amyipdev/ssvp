@@ -140,7 +140,8 @@ class DBAPIAbstracted(DBAbstract):
         try:
             curr.execute(self._treat_sql(sql), (srv,))
             mx = max(st, curr.fetchone()[0])
-        # we can ignore the pep violation
+        # we can ignore the pep violation\
+        # in the future, maybe add the type
         except:
             mx = st
         if not rc_exists:
@@ -149,6 +150,12 @@ class DBAPIAbstracted(DBAbstract):
                     (%s, %s, %s);"
             curr.execute(self._treat_sql(sql), (day, srv, mx))
         else:
+            sql = f"select serverStatus \
+                    from {self.p}day_logs \
+                    where logDate = %s \
+                        and serverName = %s;"
+            curr.execute(self._treat_sql(sql), (day, srv))
+            mx = max(st, curr.fetchone()[0])
             sql = f"update {self.p}day_logs \
                     set serverStatus = %s \
                     where logDate = %s \
