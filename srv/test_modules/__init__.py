@@ -1,9 +1,11 @@
 from . import ping
 from . import httpt
+from . import ssvplwc
 
 modules = {
     "ping": ping.ping_t,
-    "http": httpt.http_t
+    "http": httpt.http_t,
+    "ssvplwc": ssvplwc.ssvplwc_t
 }
 
 
