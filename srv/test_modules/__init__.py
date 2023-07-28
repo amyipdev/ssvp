@@ -1,7 +1,9 @@
 from . import ping
+from . import httpt
 
 modules = {
-    "ping": ping.ping_t
+    "ping": ping.ping_t,
+    "http": httpt.http_t
 }
 
 
