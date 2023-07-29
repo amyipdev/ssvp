@@ -74,4 +74,6 @@ def api_v1_uptime(srv: str):
 
 # If not run using `flask run`, we can pull options from the config file
 if __name__ == "__main__":
-    app.run(host="::" if config["enable_host_ipv6"] else "0.0.0.0", port=config["port"])
+    app.run(host="::" if config["enable_host_ipv6"] else "0.0.0.0",
+            port=config["port"] if "port" in config else (80 if config["ssl"] is None else 443),
+            ssl_context=tuple(config["ssl"]) if type(config["ssl"]) is list else config["ssl"])
