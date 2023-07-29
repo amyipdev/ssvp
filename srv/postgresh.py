@@ -18,62 +18,66 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA or visit the
 # GNU Project at https://gnu.org/licenses. The GNU Affero General Public
 # License version 3 is available at, for your convenience,
-# https://www.gnu.org/licenses/agpl-3.0.en.html. 
+# https://www.gnu.org/licenses/agpl-3.0.en.html.
 
 import dbhandle
-import sqlite3
+import psycopg2
 import datetime
 
 
-class SQLite3Handler(dbhandle.DBAPIAbstracted):
+class PostgreSQLHandler(dbhandle.DBAPIAbstracted):
     def __init__(self, config: dict) -> None:
         super().__init__(config=config, prefix=config["prefix"])
-        self.filename = config["host"]
+        self.host = config["host"]
+        self.port = config["port"]
+        self.login = config["username"]
+        self.pw = config["password"]
+        self.db = config["database"]
         
     def _generate_connection(self):
-        # TODO: have filename search the current directory, not the cwd
-        return sqlite3.connect(self.filename)
+        return psycopg2.connect(dbname=self.db,
+                                user=self.login,
+                                password=self.pw,
+                                host=self.host,
+                                port=self.port)
     
-    def _treat_sql(self, sql: str):
-        return sql.replace("%s", "?")
-
     def _fetch_daily_data(self, srv: str) -> dict:
         conn = self._generate_connection()
         curr = conn.cursor()
         sql = f"select logDate, serverStatus \
                 from {self.p}day_logs \
-                where logDate > date('now', '-3 months') \
-                    and serverName = ?;"
+                where logDate > (current_date - interval '3 months') \
+                    and serverName = %s;"
         curr.execute(sql, (srv,))
         res = {}
         for row in curr.fetchall():
-            res[datetime.datetime.strptime(row[0], "%Y-%m-%d").date()] = row[1]
+            res[row[0]] = row[1]
         curr.close()
         conn.close()
         return res
 
+    # TODO: pre-treat instead of live-treating this sql
     def update_cached_stats(self, srv: str, st: int) -> None:
         conn = self._generate_connection()
         curr = conn.cursor()
         sql = f"update {self.p}cached_stats \
                 set monthlyUptime = \
-                    (select AVG(NOT serverStatus) \
+                    (select AVG(CAST(NOT serverStatus AS integer)) \
                      from {self.p}interval_logs \
-                     where logDate > datetime('now', '-1 month') \
-                        and serverName = ?), \
+                     where logDate > (now() - interval '1 month') \
+                        and serverName = %s), \
                     yearlyUptime = \
-                    (select AVG(NOT serverStatus) \
+                    (select AVG(CAST(NOT serverStatus AS integer)) \
                      from {self.p}interval_logs \
-                     where logDate > datetime('now', '-1 year') \
-                        and serverName = ?), \
+                     where logDate > (now() - interval '1 year') \
+                        and serverName = %s), \
                     allTimeUptime = \
-                    (select AVG(NOT serverStatus) \
+                    (select AVG(CAST(NOT serverStatus AS integer)) \
                      from {self.p}interval_logs \
-                     where serverName = ?), \
-                    currentStatus = ? \
-                where serverName = ?;"
+                     where serverName = %s), \
+                    currentStatus = %s\
+                where serverName = %s;"
         curr.execute(sql, (srv, srv, srv, st, srv))
-        curr.fetchall()
         conn.commit()
         curr.close()
         conn.close()

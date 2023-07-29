@@ -22,10 +22,12 @@
 
 import mysqlh
 import sqliteh
+import postgresh
 
 dblookup = {
     "mysql": mysqlh.MySQLHandler,
-    "sqlite3": sqliteh.SQLite3Handler
+    "sqlite3": sqliteh.SQLite3Handler,
+    "postgres": postgresh.PostgreSQLHandler
 }
 
 

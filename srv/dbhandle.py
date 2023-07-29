@@ -21,6 +21,7 @@
 # https://www.gnu.org/licenses/agpl-3.0.en.html.
 
 import datetime
+import psycopg2
 
 
 def unimplemented():
@@ -143,6 +144,7 @@ class DBAPIAbstracted(DBAbstract):
         # we can ignore the pep violation\
         # in the future, maybe add the type
         except:
+            conn.commit()
             mx = st
         if not rc_exists:
             sql = f"insert into {self.p}day_logs \
@@ -161,7 +163,10 @@ class DBAPIAbstracted(DBAbstract):
                     where logDate = %s \
                         and serverName = %s;"
             curr.execute(self._treat_sql(sql), (mx, day, srv))
-        curr.fetchall()
+        try:
+            curr.fetchall()
+        except psycopg2.ProgrammingError:
+            pass
         conn.commit()
         curr.close()
         conn.close()
@@ -173,7 +178,10 @@ class DBAPIAbstracted(DBAbstract):
                 (logDate, serverName, serverStatus) values \
                 (%s, %s, %s);"
         curr.execute(self._treat_sql(sql), (datetime.datetime.now(), srv, status))
-        curr.fetchall()
+        try:
+            curr.fetchall()
+        except psycopg2.ProgrammingError:
+            pass
         conn.commit()
         curr.close()
         conn.close()

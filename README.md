@@ -23,11 +23,13 @@ The main thing that differs SSVP from other status pages is that it's designed f
 > These installation instructions will be better developed in the future. For now, they are meant for advanced users only.
 
 A more streamlined way to install SSVP is currently in development. Until then, you can:
-1. Install the npm and Python dependencies (in a venv).
-2. Copy `srv/ssvp-config.json.example` to `srv/ssvp-config.json`, and configure it.
-3. Run `make` to compile the Sass and Typescript.
-4. Add a runner for `srv/interval.py` to run on intervals (ideally every 1-5 minutes) in your crontab.
-5. Launch `srv/app.py` in a persistent environment (such as tmux).
+1. Install the libpq and python development headers. (If not using PostgreSQL, you can ignore these, and remove psycopg2 from requirements.txt or install requirements manually)
+2. Install the npm and Python dependencies (in a venv).
+3. Copy `srv/ssvp-config.json.example` to `srv/ssvp-config.json`, and configure it.
+4. Run `make` to compile the Sass and Typescript.
+5. Insert ghost entries into your database (for mysql, postgresql, sqlite3) for cached_stats.
+6. Add a runner for `srv/interval.py` to run on intervals (ideally every 1-5 minutes) in your crontab.
+7. Launch `srv/app.py` in a persistent environment (such as tmux).
 
 ## Contributing
 
