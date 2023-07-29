@@ -31,6 +31,26 @@ A more streamlined way to install SSVP is currently in development. Until then, 
 6. Add a runner for `srv/interval.py` to run on intervals (ideally every 1-5 minutes) in your crontab.
 7. Launch `srv/app.py` in a persistent environment (such as tmux).
 
+## Configuration
+
+### SSL
+
+There are three options for SSL (when directly running):
+
+1. **No SSL**: set ssl to `null`
+2. **Self-signed Certificate**: set ssl to `"adhoc"`
+3. **Existing Certificate**: set ssl to `["/path/to/cert.pem", "/path/to/key.pem"]`
+
+> To learn how to generate a widely-accepted certificate, visit [EFF Certbot](https://certbot.eff.org/instructions).
+> You should select "other" when selecting the server software if running directly.
+> Please note that we don't recommend using Certbot via snapd, check if your package manager has a native certbot package.
+
+### Ports
+
+You should specify the port for SSVP to run on. If you don't specify a port, it'll run on 80 (non-ssl) or 443 (ssl).
+
+> We don't currently support an http-redirect-to-https implementation, use a reverse proxy for that functionality.
+
 ## Contributing
 
 There are two main ways you can help contribute to SSVP:

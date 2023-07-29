@@ -3,3 +3,4 @@ mysql-connector-python
 ping3
 requests
 psycopg2
+pyopenssl

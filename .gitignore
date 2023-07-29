@@ -12,3 +12,4 @@ ssvp-config.json
 *.js
 *.db
 target/
+*.pem
