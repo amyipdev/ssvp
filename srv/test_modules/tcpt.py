@@ -24,7 +24,7 @@ import socket
 
 
 def tcp_t(srv: dict) -> bool:
-    ss = socket.socket()
+    ss = socket.socket(socket.AF_INET6 if ':' in srv["ip"] else socket.AF_INET)
     try:
         ss.connect((srv["ip"], int(srv["args"])))
         ss.close()

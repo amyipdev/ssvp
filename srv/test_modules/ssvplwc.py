@@ -25,7 +25,7 @@ import socket
 
 def ssvplwc_t(srv: dict) -> bool:
     try:
-        ss = socket.socket()
+        ss = socket.socket(socket.AF_INET6 if ':' in srv["ip"] else socket.AF_INET)
         ss.connect((srv["ip"], int(srv["args"])))
         b = ss.recv(2048)
         return b == b"ssvp-ok"
