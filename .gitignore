@@ -6,7 +6,7 @@ node_modules/
 *.css
 venv/
 __pycache__/
-ssvp-config.json
+ssvp-config*.json
 .sass-cache/
 *.css.map
 *.js
