@@ -31,8 +31,9 @@ initialize_mysql() {
     read dbh
     echo -n "Database user (must have *.* with grant option perms): "
     read dbu
-    mysql -h $dbh -u $dbu -p < srv/db-setup-mysql.sql
+    mysql -h $dbh -u $dbu -p < installer/db-setup-mysql.sql
     echo "MySQL succesfully initialized"
+    
 }
 
 initialize_postgres() {
@@ -44,7 +45,7 @@ initialize_postgres() {
     read dbh
     echo -n "Database username: "
     read dbu
-    psql -h $dbh -U $dbu -f srv/db-setup-postgres.sql
+    psql -h $dbh -U $dbu -f installer/db-setup-postgres.sql
     echo "PostgreSQL succesfully initialized"
 }
 
@@ -55,7 +56,7 @@ initialize_sqlite3() {
     fi
     echo -n "Database file: "
     read dbf
-    sqlite3 $dbf < srv/db-setup-sqlite3.sql
+    sqlite3 $dbf < installer/db-setup-sqlite3.sql
     echo "SQLite3 successfully initialized"
 }
 

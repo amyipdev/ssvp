@@ -60,6 +60,9 @@ class DBAbstract:
     def update_cached_stats(self, srv: str, st: int) -> None:
         unimplemented()
 
+    def init_cs(self, srv: str) -> None:
+        unimplemented()
+
 
 # TODO: create a database of pre-treated SQL on initialization
 class DBAPIAbstracted(DBAbstract):
@@ -87,6 +90,9 @@ class DBAPIAbstracted(DBAbstract):
 
     def get_uptime_stats(self, srv: str) -> dict:
         return self._ups(srv=srv, conn=self._generate_connection())
+    
+    def init_cs(self, srv: str) -> None:
+        return self._ics(srv=srv, conn=self._generate_connection())
 
     def _ups(self, srv: str, conn) -> dict:
         curr = conn.cursor()
@@ -209,6 +215,20 @@ class DBAPIAbstracted(DBAbstract):
                 where serverName = %s;"
         curr.execute(self._treat_sql(sql), (srv, srv, srv, st, srv))
         curr.fetchall()
+        conn.commit()
+        curr.close()
+        conn.close()
+
+    def _ics(self, srv: str, conn) -> None:
+        curr = conn.cursor()
+        sql = f"insert into {self.p}cached_stats \
+                (monthlyUptime, yearlyUptime, allTimeUptime, serverName, currentStatus)\
+                values (1.0, 1.0, 1.0, %s, -1);"
+        curr.execute(self._treat_sql(sql), (srv,))
+        try:
+            curr.fetchall()
+        except psycopg2.ProgrammingError:
+            pass
         conn.commit()
         curr.close()
         conn.close()
