@@ -41,10 +41,19 @@ if [ $PORT == "null" ]; then
     fi
 fi
 
+if [ $SSL == "adhoc" ]; then
+    echo "Adhoc certs not supported for Gunicorn"
+    exit 1
+fi
+
+if [ $SSL != "null" ]; then
+    SSLARGS=" --certfile $(jq -j .ssl[0]) --keyfile $(jq -j .ssl[1]) "
+fi
+
 if [ $(jq -j .enable_host_ipv6 ssvp-config.json) != "true" ]; then
     BINDADDR="0.0.0.0:$PORT"
 else
     BINDADDR="[::]:$PORT"
 fi
 
-gunicorn -w $(( $(nproc) * 2 )) 'app:app' -b $BINDADDR
+gunicorn -w $(( $(nproc) * 2 )) 'app:app' -b $BINDADDR $SSLARGS

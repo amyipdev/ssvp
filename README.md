@@ -29,16 +29,20 @@ A more streamlined way to install SSVP is currently in development. Until then, 
 4. Run `make` to compile the Sass and Typescript.
 5. Insert ghost entries into your database (for mysql, postgresql, sqlite3) for cached_stats.
 6. Add a runner for `srv/interval.py` to run on intervals (ideally every 1-5 minutes) in your crontab.
-7. Launch `srv/app.py` in a persistent environment (such as tmux).
+7. Launch `python3 srv/app.py` (dev) or `srv/gunicorn.sh` (prod) in a persistent environment (such as tmux).
 
 ## Configuration
+
+### WSGI Server
+
+If you're setting up a low-usage instance, you can use the dev/Werkezurg instance at `srv/app.py`. However, in production, we recommend using Gunicorn (`srv/gunicorn.sh`)
 
 ### SSL
 
 There are three options for SSL (when directly running):
 
 1. **No SSL**: set ssl to `null`
-2. **Self-signed Certificate**: set ssl to `"adhoc"`
+2. **Self-signed Certificate**: set ssl to `"adhoc"` (unsupported on gunicorn)
 3. **Existing Certificate**: set ssl to `["/path/to/cert.pem", "/path/to/key.pem"]`
 
 > To learn how to generate a widely-accepted certificate, visit [EFF Certbot](https://certbot.eff.org/instructions).
