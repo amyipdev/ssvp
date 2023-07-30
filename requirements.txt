@@ -4,3 +4,4 @@ ping3
 requests
 psycopg2
 pyopenssl
+gunicorn
