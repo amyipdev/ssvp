@@ -18,18 +18,25 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA or visit the
 # GNU Project at https://gnu.org/licenses. The GNU Affero General Public
 # License version 3 is available at, for your convenience,
-# https://www.gnu.org/licenses/agpl-3.0.en.html. 
+# https://www.gnu.org/licenses/agpl-3.0.en.html.
 
-SASS := sass
-SASS_OPTIONS :=
-SASS_SRCS = $(shell find scss/ -name '*.scss')
+# LIMITATION: We can't actually really check for libpq-dev(el).
+# It could technically be installed *anywhere* with some tricks.
+# Same goes for python3-dev(el). Let's just presume it's installed,
+# setup.py will fail if things go wrong anyways...
 
-# TODO: automatically compile sass instead of manual
+if [ ! -f "/usr/bin/pip3" ]; then
+    echo "No system pip3 detected"
+    exit 1
+fi
 
-all:
-	mkdir -p assets/css assets/js
-	$(SASS) scss/custom.scss:assets/css/custom_bootstrap.css $(SASS_OPTIONS)
-	$(MAKE) -C js
-	
-ssvplwc:
-	cd srv/ssvplwc; cargo run --release
+declare -a deps=( "python3" "jq" "gcc" "g++" "cargo" "tmux" "npx" "npm" "crontab" )
+
+for dep in "${deps[@]}"
+do
+    which $dep
+    if [ $? -ne 0 ]; then
+        echo "Missing required dependency $dep"
+        exit 1
+    fi
+done

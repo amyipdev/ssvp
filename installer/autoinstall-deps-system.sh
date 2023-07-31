@@ -18,18 +18,29 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA or visit the
 # GNU Project at https://gnu.org/licenses. The GNU Affero General Public
 # License version 3 is available at, for your convenience,
-# https://www.gnu.org/licenses/agpl-3.0.en.html. 
+# https://www.gnu.org/licenses/agpl-3.0.en.html.
 
-SASS := sass
-SASS_OPTIONS :=
-SASS_SRCS = $(shell find scss/ -name '*.scss')
+# support existing rustup installs
+su - $1 -c "which cargo"
+if [ $? -ne 0 ]; then
+    CARGO_INSTALL="cargo"
+fi
 
-# TODO: automatically compile sass instead of manual
+su - $1 -c "which crontab"
+if [ $? -ne 0 ]; then
+    CRONTAB_INSTALL_APT = "cron"
+    CRONTAB_INSTALL_DNF = "cronie"
+fi
 
-all:
-	mkdir -p assets/css assets/js
-	$(SASS) scss/custom.scss:assets/css/custom_bootstrap.css $(SASS_OPTIONS)
-	$(MAKE) -C js
-	
-ssvplwc:
-	cd srv/ssvplwc; cargo run --release
+# NOTE: This doesn't work on dual-platform systems (if both, say, apt and dnf are installed)
+if [ -f "/usr/bin/apt" ]; then
+    apt update
+    apt install python3 python3-pip python3-dev python3-venv libpq-dev nodejs npm sass jq make gcc g++ $CARGO_INSTALL tmux $CRONTAB_INSTALL_APT
+elif [ -f "/usr/bin/dnf" ]; then
+    dnf install python3 python3-pip python3-devel libpq libpq-devel nodejs nodejs-npm jq make gcc gcc-c++ $CARGO_INSTALL tmux $CRONTAB_INSTALL_DNF
+elif [ -f "/usr/bin/yum" ]; then
+    yum install python3 python3-pip python3-devel libpq libpq-devel nodejs nodejs-npm jq make gcc gcc-c++ $CARGO_INSTALL tmux $CRONTAB_INSTALL_DNF
+else
+    echo "Unsupported OS for system package autoinstall"
+    exit 1
+fi

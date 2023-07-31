@@ -23,6 +23,7 @@
 import random
 import json
 import string
+import shutil
 
 config = {}
 
@@ -47,12 +48,12 @@ if input("Enable SSL? [n]/y ") == "y":
 else:
     config["ssl"] = None
 
-if x := input("Server port number (leave blank to autodetect): ") != "":
+if (x := input("Server port number (leave blank to autodetect): ")) != "":
     config["port"] = int(x)
     
 config["instance_name"] = input("Name of SSVP instance: ")
 
-if x := input("Splash text (leave blank for no splash): ") != "":
+if (x := input("Splash text (leave blank for no splash): ")) != "":
     config["splash"] = x
 
 config["servers"] = {}
@@ -82,9 +83,14 @@ if config["database"]["type"] in ("mysql", "postgres"):
     config["database"]["database"] = x if (x := input("Database name [ssvp]: ")) != "" else "ssvp" 
     config["database"]["username"] = x if (x := input("Database username [ssvp]: ")) != "" else "ssvp"
     config["database"]["password"] = input("Database password: ")
+    config["database"]["port"] = int(input("Database port: "))
     
 filename = "srv/ssvp-config." + "".join(random.choice(string.hexdigits) for _ in range(8)) + ".json"
 json.dump(config, open(filename, "w"), indent=4, separators=(',', ': '))
 print(f"\nConfig succesfully printed to srv/{filename}.\n"
       f"When you're ready to use this config, run:\n"
-      f"  cp srv/{filename} srv/ssvp-config.json")
+      f"  cp srv/{filename} srv/ssvp-config.json\n\n"
+      f"Would you like to do so now? y/[n] ", end="")
+if input() == "y":
+    shutil.copy2(filename, "srv/ssvp-config.json")
+    print("Copied file.")

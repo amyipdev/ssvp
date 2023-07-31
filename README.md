@@ -20,16 +20,30 @@ The main thing that differs SSVP from other status pages is that it's designed f
 
 ## Installation
 
-> These installation instructions will be better developed in the future. For now, they are meant for advanced users only.
+Clone the repostiory:
 
-A more streamlined way to install SSVP is currently in development. Until then, you can:
-1. Install the libpq and python development headers. (If not using PostgreSQL, you can ignore these, and remove psycopg2 from requirements.txt or install requirements manually)
-2. Install the npm and Python dependencies (in a venv).
-3. Copy `srv/ssvp-config.json.example` to `srv/ssvp-config.json`, and configure it.
-4. Run `make` to compile the Sass and Typescript.
-5. Insert ghost entries into your database (for mysql, postgresql, sqlite3) for cached_stats.
-6. Add a runner for `srv/interval.py` to run on intervals (ideally every 1-5 minutes) in your crontab.
-7. Launch `python3 srv/app.py` (dev) or `srv/gunicorn.sh` (prod) in a persistent environment (such as tmux).
+```sh
+git clone --depth=1 https://github.com/amyipdev/ssvp
+```
+
+Install a database software (mysql or postgres)
+> If you can't, and just want to test out SSVP, use the `sqlite3` database type
+
+Run the installer:
+```sh
+cd ssvp
+./install.sh
+```
+
+Set up a cron job by inserting the following line (edit with `crontab -e`):
+```cronexp
+*/5 * * * * /path/to/ssvp/venv/bin/python3 /path/to/ssvp/srv/interval.py
+```
+
+Open up a `tmux` session, source the venv (`source venv/bin/activate`), and run either:
+
+- Development server: `python3 srv/app.py`
+- Production server: `srv/gunicorn.sh`
 
 ## Configuration
 
