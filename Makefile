@@ -23,6 +23,7 @@
 SASS := sass
 SASS_OPTIONS :=
 SASS_SRCS = $(shell find scss/ -name '*.scss')
+INSTALLDIR :=
 
 # TODO: automatically compile sass instead of manual
 
@@ -33,3 +34,8 @@ all:
 	
 ssvplwc:
 	cd srv/ssvplwc; cargo run --release
+
+install:
+	mkdir -p $(INSTALLDIR)
+	cp -a . $(INSTALLDIR)
+	chown -R $(USER):$(USER) $(INSTALLDIR)

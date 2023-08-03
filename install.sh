@@ -103,8 +103,22 @@ if [ "$INISCS" != "n" ]; then
     python3 srv/initialized_cached_stats.py
 fi
 
+echo -n "Would you like to run the full installation now? n/[y] "
+read CONTINS
+if [ "$CONTINS" == "n" ]; then
+    echo "Existing SSVP installation wizard. Remember to set up cron jobs."
+    exit 0
+fi
+
+echo -n "Installation directory [current directory]: "
+read INSDIR
+if [ "$INSDIR" == "" ]; then
+    INSDIR=$(pwd)
+fi
+
+$PREROOT make install INSTALLDIR=$INSDIR
+
 echo "Installation finished. Remember to set up a cron job for srv/interval.py to run every 5 minutes (this will be automated in the future)"
 
 # next todo: cron (also implement systemd timers)
-# next todo: get install directory (default: /opt/ssvp), `make install`
 # next todo: systemd service for web server?
