@@ -118,6 +118,19 @@ fi
 
 $PREROOT make install INSTALLDIR=$INSDIR
 
+echo -n "Choose an autorunner method (cron/[none]): "
+read ATRMTH
+if [ "$ATRMTH" == "cron" ]; then
+    (crontab -l; echo "*/5 * * * * $INSDIR/venv/bin/python3 $INSDIR/srv/interval.py") | crontab -
+    echo "Cron runner installed"
+fi
+
+echo -n "Choose a server reboot launch method (cron/[none]): "
+read RBTLNC
+if [ "$RBTLNC" == "cron" ]; then
+    (crontab -l; echo "@reboot $INSDIR/srv/tmux.sh") | crontab -
+fi
+
 echo "Installation finished. Remember to set up a cron job for srv/interval.py to run every 5 minutes (this will be automated in the future)"
 
 # next todo: cron (also implement systemd timers)
