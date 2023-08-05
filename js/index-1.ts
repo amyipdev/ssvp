@@ -157,6 +157,14 @@ function generate_table(): void {
                     </svg>
                     <div class="table-responsive border-0">
                         <table class="unpadded-table border-0">
+                            <tr class="bg-body-tertiary border-0">
+                                <th class="half-width bg-body-tertiary border-0 pt-0" style="font-size: 0.85rem;">${numBars} days ago</th>
+                                <th class="half-width bg-body-tertiary border-0 pt-0 text-end" style="font-size: 0.85rem;">now</th>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="table-responsive border-0">
+                        <table class="unpadded-table border-0">
                             <tr class="bg-body-tertiary border-0">`;
             for (const e of [["Monthly", serverInfoList[sp].monthly_uptime],
                              ["Yearly", serverInfoList[sp].yearly_uptime],
