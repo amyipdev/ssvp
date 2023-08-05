@@ -25,6 +25,7 @@ from flask import Flask, render_template, send_from_directory, jsonify
 
 import json
 import os
+import datetime
 
 import getdb
 
@@ -75,6 +76,11 @@ def api_v1_uptime(srv: str):
     base = db.get_uptime_stats(srv)
     base["daily_types"] = db.get_daily_data(srv)
     return jsonify(base)
+
+
+@app.route("/api/v1/ctz_date")
+def api_v1_ctz_date():
+    return str(datetime.date.today())
 
 
 # If not run using `flask run`, we can pull options from the config file

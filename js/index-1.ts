@@ -26,12 +26,16 @@ const DOUBLE_MONTH_SHIFT: number = 1920;
 const PCT_BREAKDOWN_SPLIT: number = 720;
 const PCT_BREAKDOWN_SPLIT_TWO: number = 1366;
 const DSF: number = 5;
+const MSD: number = 86400000;
+const MONTHS: Array<string> = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 // TODO: internationalization of strings in here
 let serverListExpanded: number = getDisplayCategory();
 let listOfServers: Array<string>;
 let listOfServices: Array<string>;
 let serverInfoList: Array<ServerInfo> = [];
+let todaysCurrentDate: Date = new Date();
+todaysCurrentDate.setUTCHours(0, 0, 0, 0);
 
 async function serverListInitialization() {
     serverInfoList = [];
@@ -47,6 +51,9 @@ async function serverListInitialization() {
         const sr = await fetch("/api/v1/uptime/" + srv);
         serverInfoList.push(await sr.json());
     }
+    const tr = await fetch("/api/v1/ctz_date");
+    const nd: Array<number> = (await tr.text()).split("-").map((x) => parseInt(x));
+    todaysCurrentDate.setUTCFullYear(nd[0], nd[1]-1, nd[2]);
     let box: HTMLElement = document.getElementById("totality-indic");
     // when services are implemented,
     // add an && clause for servicesList.every
@@ -149,9 +156,16 @@ function generate_table(): void {
                             </tr>
                         </table>
                     </div>
-                    <svg class="my-2" preserveAspectRatio="none" viewBox="0 0 ${numBars*5-2} 35">`
+                    <svg class="my-2" preserveAspectRatio="none" viewBox="0 0 ${numBars*5-2} 35">`;
             for (let j: number = 0; j < numBars; ++j) {
-                builder += `<rect rx="2" class="indic-${serverInfoList[sp].daily_types[j+adj]}" height="35" width="3" x="${5*j}" y="0"></rect>`
+                // @ts-ignore
+                let d: Date = new Date(todaysCurrentDate - ((numBars-1-j)*MSD));
+                builder += `<rect rx="2" class="indic-${serverInfoList[sp].daily_types[j+adj]}" height="35" width="3" x="${5*j}" y="0"></rect>
+                            <foreignObject x="${5*j}" y="0" height="35" width="3">
+                                <button class="border-0 m-0 p-0" style="background-color: rgba(0, 0, 0, 0%); height: 100%; width: 100%" type="button" data-bs-toggle="popover" data-bs-placement="top" data-bs-trigger="hover"
+                                    data-bs-title="${d.getUTCFullYear()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}"
+                                    data-bs-content="${dailyinfo_tostring(serverInfoList[sp].daily_types[j+adj])}"></button>
+                            </foreignObject>`;
             }
             builder += `
                     </svg>
@@ -191,10 +205,10 @@ function generate_table(): void {
                         </table>
                     </div>                                                       
                 </th>
-            `
+            `;
             ++sp;
         }
-        builder += "</tr>"
+        builder += "</tr>";
     }
     builder += "</table>";
     document.getElementById("table-gen").innerHTML = builder;
@@ -226,9 +240,16 @@ function generate_accordion(): void {
                         </h2>
                         <div id="collapse${sp}" class="accordion-collapse collapse" data-bs-parent="#accordionGen">
                             <div class="accordion-body">
-                                <svg class="my-2" preserveAspectRatio="none" viewBox="0 0 ${numBars*5-2} 15">`
+                                <svg class="my-2" preserveAspectRatio="none" viewBox="0 0 ${numBars*5-2} 15">`;
         for (let j: number = 0; j < numBars; ++j) {
-            builder += `<rect rx="2" class="indic-${serverInfoList[sp].daily_types[j+adj]}" height="15" width="3" x="${5*j}" y="0"></rect>`
+            // @ts-ignore
+            let d: Date = new Date(todaysCurrentDate - ((numBars-1-j)*MSD));
+            builder += `<rect rx="2" class="indic-${serverInfoList[sp].daily_types[j+adj]}" height="15" width="3" x="${5*j}" y="0"></rect>
+                        <foreignObject x="${5*j}" y="0" height="15" width="3">
+                            <button class="border-0 m-0 p-0" style="background-color: rgba(0, 0, 0, 0%); height: 500%; width: 100%" type="button" data-bs-toggle="popover" data-bs-placement="top" data-bs-trigger="hover"
+                                data-bs-title="${d.getUTCFullYear()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}"
+                                data-bs-content="${dailyinfo_tostring(serverInfoList[sp].daily_types[j+adj])}"></button>
+                        </foreignObject>`;
         }
         builder += `            </svg>
                                 <div class="table-responsive border-0">
@@ -241,7 +262,7 @@ function generate_accordion(): void {
                                 </div>
                             </div>
                         </div>
-                    </div>`
+                    </div>`;
         ++sp;
     }
     builder += "</div>";
@@ -252,6 +273,11 @@ function generate_accordion(): void {
     document.getElementById(`collapse${ll-1}`).addEventListener("hide.bs.collapse", event => {
         document.getElementById(`accordbt-${ll-1}`).classList.replace("rounded-bottom-0", "rounded-bottom-4");
     });
+    // since the accordion is always redone after the table, this is a safe operation
+    // if that changes, both need to have it
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+    // @ts-ignore
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
 }
 
 function getDisplayCategory(): number {
