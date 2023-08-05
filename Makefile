@@ -20,8 +20,8 @@
 # License version 3 is available at, for your convenience,
 # https://www.gnu.org/licenses/agpl-3.0.en.html. 
 
-SASS := sass
-SASS_OPTIONS :=
+SASS := npx sass
+SASS_OPTIONS := --trace
 SASS_SRCS = $(shell find scss/ -name '*.scss')
 INSTALLDIR :=
 
@@ -29,7 +29,7 @@ INSTALLDIR :=
 
 all:
 	mkdir -p assets/css assets/js
-	$(SASS) scss/custom.scss:assets/css/custom_bootstrap.css $(SASS_OPTIONS) --trace
+	$(SASS) scss/custom.scss:assets/css/custom_bootstrap.css $(SASS_OPTIONS)
 	$(MAKE) -C js
 	
 ssvplwc:
