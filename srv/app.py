@@ -21,7 +21,7 @@
 # License version 3 is available at, for your convenience,
 # https://www.gnu.org/licenses/agpl-3.0.en.html. 
 
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, jsonify
 
 import json
 import os
@@ -57,19 +57,24 @@ def assets(path: str):
 
 @app.route("/api/v1/servers")
 def api_v1_list_servers():
-    return json.dumps(list(config["servers"].keys()))
+    return jsonify(list(config["servers"].keys()))
+
+
+@app.route("/api/v1/services")
+def api_v1_services():
+    return jsonify(list(config["services"].keys()))
 
 
 @app.route("/api/v1/uptime_raw/<srv>")
 def api_v1_uptime_raw(srv: str):
-    return json.dumps(db.get_uptime_stats(srv))
+    return jsonify(db.get_uptime_stats(srv))
 
 
 @app.route("/api/v1/uptime/<srv>")
 def api_v1_uptime(srv: str):
     base = db.get_uptime_stats(srv)
     base["daily_types"] = db.get_daily_data(srv)
-    return json.dumps(base)
+    return jsonify(base)
 
 
 # If not run using `flask run`, we can pull options from the config file

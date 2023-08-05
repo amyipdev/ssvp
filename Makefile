@@ -29,7 +29,7 @@ INSTALLDIR :=
 
 all:
 	mkdir -p assets/css assets/js
-	$(SASS) scss/custom.scss:assets/css/custom_bootstrap.css $(SASS_OPTIONS)
+	$(SASS) scss/custom.scss:assets/css/custom_bootstrap.css $(SASS_OPTIONS) --trace
 	$(MAKE) -C js
 	
 ssvplwc:

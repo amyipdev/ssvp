@@ -30,14 +30,20 @@ const DSF: number = 5;
 // TODO: internationalization of strings in here
 let serverListExpanded: number = getDisplayCategory();
 let listOfServers: Array<string>;
+let listOfServices: Array<string>;
 let serverInfoList: Array<ServerInfo> = [];
 
 async function serverListInitialization() {
+    serverInfoList = [];
     if (typeof listOfServers === "undefined") {
         const r = await fetch("/api/v1/servers");
         listOfServers = await r.json();
     }
-    for (const srv of listOfServers) {
+    if (typeof listOfServices === "undefined") {
+        const r = await fetch("/api/v1/services");
+        listOfServices = await r.json();
+    }
+    for (const srv of listOfServers.concat(listOfServices)) {
         const sr = await fetch("/api/v1/uptime/" + srv);
         serverInfoList.push(await sr.json());
     }
@@ -66,6 +72,7 @@ async function serverListInitialization() {
             box.classList.add("bg-body-tertiary")
     }
     generate_table();
+    generate_accordion();
 }
 
 serverListInitialization();
@@ -82,13 +89,13 @@ function dailyinfo_tostring(di: DailyInfo): string {
         case DailyInfo.Operational:
             return "Operational";
         case DailyInfo.CriticalFailure:
-            return "Critical Failure";
+            return "Critical&nbsp;Failure";
         case DailyInfo.NonCriticalEvent:
-            return "Non-Critical Event";
+            return "Non-Critical&nbsp;Event";
         case DailyInfo.UnknownStatus:
-            return "Unknown Status";
+            return "Unknown&nbsp;Status";
         default:
-            return "(site error)";
+            return "(site&nbsp;error)";
     }
 }
 
@@ -185,6 +192,52 @@ function generate_table(): void {
     document.getElementById("table-gen").innerHTML = builder;
 }
 
+function generate_accordion(): void {
+    let builder: string = "<div class=\"accordion\" id=\"accordionGen\">";
+    let sp: number = listOfServers.length;
+    const hd: number = sp;
+    const ll: number = serverInfoList.length;
+    const numBars: number = (window.innerWidth < SINGLE_MONTH_SHIFT ? 30 :
+                                (window.innerWidth < DOUBLE_MONTH_SHIFT ? 60 : 90));
+    const adj: number = 90 - numBars;
+    while (sp < ll) {
+        const ss: DailyInfo = serverInfoList[sp].current_status;
+        const rc: string = sp == hd ? "rounded-top-4" : (sp == ll - 1 ? "rounded-bottom-4" : "");
+        builder += `<div class="accordion-item ${rc}">
+                        <h2 class="accordion-header">
+                            <button id="accordbt-${sp}" class="accordion-button bg-body-tertiary ${rc}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${sp}" aria-expanded="true" aria-controls="collapse${sp}">
+                                <div class="table-responsive" style="width: 100%">
+                                    <table class="unpadded-table border-0">
+                                        <tr class="border-0">
+                                            <th class="half-width bg-body-tertiary pl-2 border-0">${listOfServices[sp-hd]}</th>
+                                            <th style="white-space: nowrap; vertical-align: middle" class="half-width bg-body-tertiary pr-4 border-0 text-end ${convertFontColor(ss)}">${dailyinfo_tostring(ss)}</th>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse${sp}" class="accordion-collapse collapse" data-bs-parent="#accordionGen">
+                            <div class="accordion-body">
+                                <svg class="my-2" preserveAspectRatio="none" viewBox="0 0 ${numBars*5-2} 15">`
+        for (let j: number = 0; j < numBars; ++j) {
+            builder += `<rect rx="2" class="indic-${serverInfoList[sp].daily_types[j+adj]}" height="15" width="3" x="${5*j}" y="0"></rect>`
+        }
+        builder += `            </svg>
+                            </div>
+                        </div>
+                    </div>`
+        ++sp;
+    }
+    builder += "</div>";
+    document.getElementById("services-gen").innerHTML = builder;
+    document.getElementById(`collapse${ll-1}`).addEventListener("show.bs.collapse", event => {
+        document.getElementById(`accordbt-${ll-1}`).classList.replace("rounded-bottom-4", "rounded-bottom-0");
+    });
+    document.getElementById(`collapse${ll-1}`).addEventListener("hide.bs.collapse", event => {
+        document.getElementById(`accordbt-${ll-1}`).classList.replace("rounded-bottom-0", "rounded-bottom-4");
+    });
+}
+
 function getDisplayCategory(): number {
     const w = window.innerWidth;
     if (w < PCT_BREAKDOWN_SPLIT)
@@ -206,6 +259,7 @@ function detectViewportChange(): void {
     if (serverListExpanded != new_check) {
         serverListExpanded = new_check;
         generate_table();
+        generate_accordion();
     }
 }
 

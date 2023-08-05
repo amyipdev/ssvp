@@ -43,4 +43,4 @@ def handle_servers(srv: tuple):
 
 
 with multiprocessing.Pool(8) as p:
-    p.map(handle_servers, config["servers"].items())
+    p.map(handle_servers, list(config["servers"].items()) + list(config["services"].items()))
