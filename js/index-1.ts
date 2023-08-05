@@ -231,6 +231,14 @@ function generate_accordion(): void {
             builder += `<rect rx="2" class="indic-${serverInfoList[sp].daily_types[j+adj]}" height="15" width="3" x="${5*j}" y="0"></rect>`
         }
         builder += `            </svg>
+                                <div class="table-responsive border-0">
+                                    <table class="unpadded-table border-0">
+                                        <tr class="bg-body border-0">
+                                            <th class="half-width bg-body border-0 pt-0" style="font-size: 0.85rem;">${numBars} days ago</th>
+                                            <th class="half-width bg-body border-0 pt-0 text-end" style="font-size: 0.85rem;">now</th>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>`
