@@ -28,4 +28,4 @@ grant all on all tables in schema public to ssvp;
 create table ssvp_day_logs (logDate date not null, serverName text not null, serverStatus integer not null);
 create table ssvp_interval_logs (logDate timestamp not null, serverName text not null, serverStatus boolean not null);
 create table ssvp_cached_stats (monthlyUptime double precision not null, yearlyUptime double precision not null, allTimeUptime double precision not null, serverName text not null, currentStatus integer not null);
-create table ssvp_events (eventID serial primary key not null, serverName text not null, eventName text not null, eventDescription text, startTime timestamp not null, endTime timestamp, severity integer not null);
+create table ssvp_events (eventID serial primary key, serverName text not null, eventName text not null, eventDescription text, startTime timestamp not null, endTime timestamp, severity integer not null);
