@@ -112,11 +112,11 @@ fi
 
 echo -n "Installation directory [current directory]: "
 read INSDIR
-if [ "$INSDIR" == "" ]; then
-    INSDIR=$(pwd)
+if [ "$INSDIR" != "" ]; then
+    $PREROOT make install INSTALLDIR=$INSDIR
+else
+    INSDIR="$(pwd)"
 fi
-
-$PREROOT make install INSTALLDIR=$INSDIR
 
 echo -n "Choose an autorunner method (cron/[none]): "
 read ATRMTH
@@ -131,7 +131,7 @@ if [ "$RBTLNC" == "cron" ]; then
     (crontab -l; echo "@reboot $INSDIR/srv/tmux.sh") | crontab -
 fi
 
-echo "Installation finished. Remember to set up a cron job for srv/interval.py to run every 5 minutes (this will be automated in the future)"
+echo "Installation finished."
 
 # next todo: cron (also implement systemd timers)
 # next todo: systemd service for web server?

@@ -13,3 +13,6 @@ ssvp-config*.json
 *.db
 target/
 *.pem
+_build/
+_static/
+_templates/
