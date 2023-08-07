@@ -5,3 +5,5 @@ requests
 psycopg2
 pyopenssl
 gunicorn
+sphinx
+sphinx_rtd_theme
