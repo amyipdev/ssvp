@@ -1,6 +1,18 @@
 {% include "_header.html" %}
 <div class="container-fluid">
-    <h1 class="text-center">Event Log</h1>
-    <p>Not yet implemented...</p>
+    <div class="table-responsive">
+        <table class="border-0 w-75 mx-auto">
+            <tr class="border-0 w-100 mx-auto">
+                <th class="third-width"><button type="button" id="pg-bt-left" class="btn btn-outline-secondary"><i class="bi-arrow-left"></i></button></th>
+                <th class="third-width border-0"><h1 class="text-center">Event Log</h1></th>
+                <th class="third-width"><button type="button" id="pg-bt-right" class="btn btn-outline-secondary float-end"><i class="bi-arrow-right"></i></button></th>
+            </tr>
+        </table>
+    </div>
 </div>
+<div class="container-fluid" id="events-table-gen"><div class="table-responsive"></div></div>
+<!-- TODO: abstract external dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+<script type="module" src="/assets/js/common-1.js"></script>
+<script type="module" src="/assets/js/events-1.js"></script>
 {% include "_footer.html" %}

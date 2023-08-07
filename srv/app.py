@@ -21,7 +21,7 @@
 # License version 3 is available at, for your convenience,
 # https://www.gnu.org/licenses/agpl-3.0.en.html. 
 
-from flask import Flask, render_template, send_from_directory, jsonify
+from flask import Flask, render_template, send_from_directory, jsonify, request
 
 import json
 import os
@@ -81,6 +81,16 @@ def api_v1_uptime(srv: str):
 @app.route("/api/v1/ctz_date")
 def api_v1_ctz_date():
     return str(datetime.date.today())
+
+
+@app.route("/api/v1/events")
+def api_v1_events():
+    return jsonify(db.fetch_events(int(request.args.get("lim", 100)), int(request.args.get("page", 0))))
+
+
+@app.route("/api/v1/size/events")
+def api_v1_size_events():
+    return jsonify(db.size_events())
 
 
 # If not run using `flask run`, we can pull options from the config file

@@ -63,6 +63,14 @@ class DBAbstract:
     def init_cs(self, srv: str) -> None:
         unimplemented()
 
+    def fetch_events(self, lim: int, page: int) -> list:
+        unimplemented()
+        return []
+
+    def size_events(self) -> int:
+        unimplemented()
+        return 0
+
 
 # TODO: create a database of pre-treated SQL on initialization
 class DBAPIAbstracted(DBAbstract):
@@ -93,6 +101,12 @@ class DBAPIAbstracted(DBAbstract):
     
     def init_cs(self, srv: str) -> None:
         return self._ics(srv=srv, conn=self._generate_connection())
+
+    def fetch_events(self, lim: int, page: int) -> list:
+        return self._fev(lim=lim, page=page, conn=self._generate_connection())
+
+    def size_events(self) -> int:
+        return self._sev(conn=self._generate_connection())
 
     def _ups(self, srv: str, conn) -> dict:
         curr = conn.cursor()
@@ -232,3 +246,48 @@ class DBAPIAbstracted(DBAbstract):
         conn.commit()
         curr.close()
         conn.close()
+
+    def _fev(self, lim: int, page: int, conn) -> list:
+        curr = conn.cursor()
+        sql = f"select eventID, serverName, startTime, endTime, severity, eventName, eventDescription \
+                from {self.p}events \
+                order by \
+                    (case \
+                        when endTime is null \
+                            then 1 \
+                        else \
+                            0 \
+                    end) desc, \
+                    startTime desc \
+                limit %s,%s;"
+        curr.execute(self._treat_sql(sql), (lim*page, lim))
+        res = []
+        try:
+            res = [{
+                "eventID": x[0],
+                "serverName": x[1],
+                "startTime": x[2],
+                "endTime": x[3],
+                "severity": x[4],
+                "eventName": x[5],
+                "eventDescription": x[6]
+            } for x in curr.fetchall()]
+        except psycopg2.ProgrammingError:
+            pass
+        curr.close()
+        conn.close()
+        return res
+
+    def _sev(self, conn) -> int:
+        curr = conn.cursor()
+        sql = f"select count(eventID) \
+                from {self.p}events;"
+        curr.execute(self._treat_sql(sql))
+        res = 0
+        try:
+            res = curr.fetchone()[0]
+        except psycopg2.ProgrammingError:
+            pass
+        curr.close()
+        conn.close()
+        return res

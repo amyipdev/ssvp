@@ -18,66 +18,32 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA or visit the
 // GNU Project at https://gnu.org/licenses. The GNU Affero General Public
 // License version 3 is available at, for your convenience,
-// https://www.gnu.org/licenses/agpl-3.0.en.html. 
+// https://www.gnu.org/licenses/agpl-3.0.en.html.
 
-@import "../node_modules/bootstrap/scss/bootstrap";
-
-body {
-    padding-top: 5rem;
-    padding-bottom: 10rem;
+export enum DailyInfo {
+    Operational = 0,
+    NonCriticalEvent = 1,
+    CriticalFailure = 2,
+    UnknownStatus = -1
 }
 
-.table-uptime-element {
-    @extend .mb-0;
+export interface ServerInfo {
+    monthly_uptime: number;
+    yearly_uptime: number;
+    alltime_uptime: number;
+    current_status: DailyInfo;
+    daily_types: Array<DailyInfo>;
 }
 
-.unpadded-table {
-    @extend .mb-0;
-    @extend .table;
-}
-
-.half-width {
-    width: 50%;
-}
-
-.third-width {
-    width: calc(100% / 3);
-}
-
-.indic-0 {
-    //fill: #60a561;
-    fill: var(--bs-success);
-}
-
-.indic-1 {
-    //fill: #ffb140;
-    fill: var(--bs-warning);
-}
-
-.indic-2 {
-    //fill: #e85f5c;
-    fill: var(--bs-danger);
-}
-
-.indic--1 {
-    //fill: #b6b8dc;
-    fill: var(--bs-tertiary-color);
-}
-
-.nav-item {
-    @extend .ps-4;
-}
-
-#gh-logo {
-    filter: invert(100%);
-}
-
-#instance-table {
-    border-collapse: separate;
-    border-spacing: 2rem;
-}
-
-#events-table {
-    border-collapse: separate;
-    border-spacing: 3rem;
+export function convertFontColor(ss: DailyInfo): string {
+    switch (ss) {
+        case DailyInfo.Operational:
+            return "text-success";
+        case DailyInfo.NonCriticalEvent:
+            return "text-warning";
+        case DailyInfo.CriticalFailure:
+            return "text-danger";
+        default:
+            return "text-body-tertiary";
+    }
 }

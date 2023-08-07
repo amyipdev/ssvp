@@ -20,6 +20,8 @@
 // License version 3 is available at, for your convenience,
 // https://www.gnu.org/licenses/agpl-3.0.en.html. 
 
+import { DailyInfo, ServerInfo, convertFontColor } from "./common-1.js";
+
 const EXPANSION_SIZE: number = 1280;
 const SINGLE_MONTH_SHIFT: number = 800;
 const DOUBLE_MONTH_SHIFT: number = 1920;
@@ -84,13 +86,6 @@ async function serverListInitialization() {
 
 serverListInitialization();
 
-enum DailyInfo {
-    Operational = 0,
-    NonCriticalEvent = 1,
-    CriticalFailure = 2,
-    UnknownStatus = -1
-}
-
 function dailyinfo_tostring(di: DailyInfo): string {
     switch (di) {
         case DailyInfo.Operational:
@@ -106,29 +101,8 @@ function dailyinfo_tostring(di: DailyInfo): string {
     }
 }
 
-interface ServerInfo {
-    monthly_uptime: number;
-    yearly_uptime: number;
-    alltime_uptime: number;
-    current_status: DailyInfo;
-    daily_types: Array<DailyInfo>;
-}
-
 function gen_pct_string(pct: number, sf: number): string {
     return (Math.round(pct * (10**(sf+2))) / (10**sf)).toString() + "%";
-}
-
-function convertFontColor(ss: DailyInfo): string {
-    switch (ss) {
-        case DailyInfo.Operational:
-            return "text-success";
-        case DailyInfo.NonCriticalEvent:
-            return "text-warning";
-        case DailyInfo.CriticalFailure:
-            return "text-danger";
-        default:
-            return "text-body-tertiary";
-    }
 }
 
 function generate_table(): void {

@@ -24,13 +24,16 @@ SASS := npx sass
 SASS_OPTIONS := --trace
 SASS_SRCS = $(shell find scss/ -name '*.scss')
 INSTALLDIR :=
+TSC := npx tsc
+TSC_OPTIONS := --noEmitOnError --module es2015
 
 # TODO: automatically compile sass instead of manual
 
 all:
 	mkdir -p assets/css assets/js
 	$(SASS) scss/custom.scss:assets/css/custom_bootstrap.css $(SASS_OPTIONS)
-	$(MAKE) -C js
+	$(TSC) $(TSC_OPTIONS) --outDir assets/js js/*.ts
+#	$(MAKE) -C js
 	
 ssvplwc:
 	cd srv/ssvplwc; cargo run --release
