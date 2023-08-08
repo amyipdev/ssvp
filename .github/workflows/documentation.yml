@@ -1,7 +1,9 @@
 name: Docs
-on: [push, pull_request, workflow_dispatch]
+on: [push, workflow_dispatch]
 permissions:
     contents: write
+    pages: write
+    id-token: write
 jobs:
   docs:
     runs-on: ubuntu-latest
