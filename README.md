@@ -2,8 +2,8 @@
 <h1>ssvp: the server statistics viewer project</h1>
 </div>
 <div align="center">
-
-![GitHub](https://img.shields.io/github/license/amyipdev/ssvp) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/amyipdev/ssvp)
+    
+[![GitHub](https://img.shields.io/github/license/amyipdev/ssvp)](https://www.gnu.org/licenses/agpl-3.0.en.html) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/amyipdev/ssvp) [![Static Badge](https://img.shields.io/badge/documentation-ssvp.docs.amyip.net-blue?link=https%3A%2F%2Fssvp.docs.amyip.net%2Findex.html)](https://ssvp.docs.amyip.net)
 
 </div>
 
@@ -20,14 +20,15 @@ The main thing that differs SSVP from other status pages is that it's designed f
 
 ## Installation
 
-Clone the repostiory:
+**Full installation guide**: https://ssvp.docs.amyip.net/installing.html
+
+- Clone the repostiory:
 
 ```sh
 git clone --depth=1 https://github.com/amyipdev/ssvp
 ```
 
-Install a database software (mysql or postgres)
-> If you can't, and just want to test out SSVP, use the `sqlite3` database type
+- Set up a database service (sqlite3, mysql, mariadb, or postgres)
 
 Run the installer:
 ```sh
@@ -35,17 +36,9 @@ cd ssvp
 ./install.sh
 ```
 
-Set up a cron job by inserting the following line (edit with `crontab -e`):
-```cronexp
-*/5 * * * * /path/to/ssvp/venv/bin/python3 /path/to/ssvp/srv/interval.py
-```
-
-Open up a `tmux` session, source the venv (`source venv/bin/activate`), and run either:
-
-- Development server: `python3 srv/app.py`
-- Production server: `srv/gunicorn.sh`
-
 ## Configuration
+
+**Full configuration guide**: https://ssvp.docs.amyip.net/configuration.html
 
 ### WSGI Server
 
@@ -71,11 +64,7 @@ You should specify the port for SSVP to run on. If you don't specify a port, it'
 
 ## Contributing
 
-There are two main ways you can help contribute to SSVP:
-1. Use SSVP, and report any bugs you find in Issues.
-2. Fix bugs and implement new features via PRs.
-
-More detailed contribution instructions will be available at a later time.
+Please view our contributer guide: https://ssvp.docs.amyip.net/contributing.html
 
 ## Limitations and Future Features
 
