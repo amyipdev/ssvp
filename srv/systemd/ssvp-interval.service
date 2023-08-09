@@ -1,0 +1,10 @@
+[Unit]
+Description=ssvp (server statistics viewer project) server uptime checker
+Documentation=https://ssvp.docs.amyip.net
+
+[Service]
+Type=oneshot
+ExecStart=<INSTALLDIR>/venv-wrapper.sh python3 srv/interval.py
+
+[Install]
+WantedBy=multi-user.target

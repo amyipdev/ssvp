@@ -64,8 +64,8 @@ If you use the defaults for databases, you should use the defaults in the config
 fail to run without the entries.
 
 The full installation is meant for server installs, when you want to segregate the installations and have automation set up for you automatically. If you're a developer,
-this often is not necessary. Cron is currently the only supported mode for autoinstallation; please note your cron setup needs to be able to support `@reboot` (most do, but some old editions don't).
-Systemd (and OpenRC) support will be added eventually.
+this often is not necessary. Cron is one option for installation; systemd is another. Read the `configuration guide <configuration.html>`_ for more information on setting up systemd.
+The "enable on boot" option for systemd will take care of everything. OpenRC is not currently supported, but may be added in the future; the same goes for other systems (sysvinit, upstart, runit, shepherd).
 
 You're now done with the installation. You can run the server by running `srv/tmux.sh`. It should print :code:`no current client` when done. You can check on the server by running `tmux attach`,
 and disconnect from it by pressing `CTRL-b d`.

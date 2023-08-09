@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # ssvp: server statistics viewer project
@@ -20,8 +21,47 @@
 # License version 3 is available at, for your convenience,
 # https://www.gnu.org/licenses/agpl-3.0.en.html.
 
-# Should be run with venv-wrapper or the venv natively
+set -e
+
 cd "$(dirname "$0")"
-tmux new-session -d -s ENTER
-tmux detach -s ENTER
-tmux send-keys -t 0 "./gunicorn.sh" ENTER
+
+echo "SSVP Uninstaller - cleanly uninstalls SSVP"
+
+if [ $(id -u) -ne 0 ]; then
+    which sudo > /dev/null
+    if [ $? -ne 0 ]; then
+        which doas > /dev/null
+        if [ $? -ne 0 ]; then
+            echo "Either run as root, or have sudo installed"
+            exit 1
+        else
+            PREROOT="doas"
+        fi
+    else
+        PREROOT="sudo"
+    fi
+fi
+
+echo -n "Installation directory: [none] "
+read INSDIR
+if [ "$INSDIR" != "" ]; then
+    $PREROOT rm -rf $INSDIR
+fi
+
+which systemctl > /dev/null
+if [ $? -eq 0 ]; then
+    echo -n "Clear systemd? n/[y] "
+    read CLRSMD
+    if [ "$CLRSMD" != "n" ]; then
+        set +e
+        for i in ssvp-gunicorn.service ssvp-interval.service ssvp-interval.timer ssvp-werkzeug.service; do
+            # --now was causing systemctl to hang, so do it manually
+            $PREROOT systemctl disable $i
+            $PREROOT systemctl stop $i
+            $PREROOT rm -f /usr/lib/systemd/system/$i
+        done
+        set -e
+    fi
+fi
+
+echo "Uninstall complete."

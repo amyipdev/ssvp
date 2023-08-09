@@ -1,0 +1,11 @@
+[Unit]
+Description=ssvp (server statistics viewer project) server uptime checker
+Documentation=https://ssvp.docs.amyip.net
+Requires=ssvp-interval.service
+
+[Timer]
+Unit=ssvp-interval.service
+OnUnitActiveSec=5min
+
+[Install]
+WantedBy=timers.target
