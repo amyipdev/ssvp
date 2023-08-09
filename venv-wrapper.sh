@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # ssvp: server statistics viewer project
@@ -18,35 +19,12 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA or visit the
 # GNU Project at https://gnu.org/licenses. The GNU Affero General Public
 # License version 3 is available at, for your convenience,
-# https://www.gnu.org/licenses/agpl-3.0.en.html. 
+# https://www.gnu.org/licenses/agpl-3.0.en.html.
 
-SASS := npx sass
-SASS_OPTIONS := --trace
-SASS_SRCS = $(shell find scss/ -name '*.scss')
-INSTALLDIR :=
-TSC := npx tsc
-TSC_OPTIONS := --noEmitOnError --module es2015
-OGUSER := $(USER)
+set -e
 
-.PHONY: docs
+cd "$(dirname "$0")"
 
-# TODO: automatically compile sass instead of manual
+source venv/bin/activate
 
-all:
-	mkdir -p assets/css assets/js
-	$(SASS) scss/custom.scss:assets/css/custom_bootstrap.css $(SASS_OPTIONS)
-	$(TSC) $(TSC_OPTIONS) --outDir assets/js js/*.ts
-	
-ssvplwc:
-	cd srv/ssvplwc; cargo run --release
-
-install:
-	mkdir -p $(INSTALLDIR)
-	cp -a . $(INSTALLDIR)
-	chown -R $(OGUSER):$(OGUSER) $(INSTALLDIR)
-
-clean:
-	rm -rf .sass-cache assets node_modules venv docs/_build
-
-docs:
-	make -C docs html
+${@: 1}

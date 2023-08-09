@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # ssvp: server statistics viewer project
@@ -27,8 +28,13 @@ cd "$(dirname "$0")"
 if [ $(id -u) -ne 0 ]; then
     which sudo > /dev/null
     if [ $? -ne 0 ]; then
-        echo "Either run as root, or have sudo installed"
-        exit 1
+        which doas > /dev/null
+        if [ $? -ne 0 ]; then
+            echo "Either run as root, or have sudo installed"
+            exit 1
+        else
+            PREROOT="doas"
+        fi
     else
         PREROOT="sudo"
     fi
@@ -113,25 +119,60 @@ fi
 echo -n "Installation directory [current directory]: "
 read INSDIR
 if [ "$INSDIR" != "" ]; then
-    $PREROOT make install INSTALLDIR=$INSDIR
+    $PREROOT make install INSTALLDIR=$INSDIR OGUSER=$(whoami)
+    # handle SELinux
+    if [ -f "/usr/sbin/restorecon" ]; then
+        $PREROOT restorecon -rv $INSDIR
+    fi
 else
     INSDIR="$(pwd)"
 fi
 
-echo -n "Choose an autorunner method (cron/[none]): "
+# TODO: switch to case
+echo -n "Choose an autorunner method (systemd/cron/[none]): "
 read ATRMTH
 if [ "$ATRMTH" == "cron" ]; then
     (crontab -l; echo "*/5 * * * * $INSDIR/venv/bin/python3 $INSDIR/srv/interval.py") | crontab -
     echo "Cron runner installed"
+elif [ "$ATRMTH" == "systemd" ]; then
+    for i in ssvp-gunicorn.service ssvp-werkzeug.service; do
+        sed -e "s/<INSTALLDIR>/$(echo $INSDIR | sed 's_/_\\/_g')/g" srv/systemd/$i | $PREROOT tee $INSDIR/srv/systemd/$i > /dev/null
+        $PREROOT ln -sf $INSDIR/srv/systemd/$i /usr/lib/systemd/system/$i
+    done
+    $PREROOT systemctl daemon-reload
+    echo -n "Enable on boot? prod/dev/[none] "
+    read ATRACN
+    case $ATRACN in
+        "prod")
+            $PREROOT systemctl enable --now ssvp-gunicorn.service
+            ;;
+        "dev")
+            $PREROOT systemctl enable --now ssvp-werkzeug.service
+            ;;
+        *)
+            echo "To load on boot or start SSVP later, read https://ssvp.docs.amyip.net/configuration.html#systemd"
+            ;;
+    esac
 fi
 
-echo -n "Choose a server reboot launch method (cron/[none]): "
+# TODO: switch to case
+echo -n "Choose a server reboot launch method (systemd/cron/[none]): "
 read RBTLNC
 if [ "$RBTLNC" == "cron" ]; then
     (crontab -l; echo "@reboot $INSDIR/srv/tmux.sh") | crontab -
+elif [ "$RBTLNC" == "systemd" ]; then
+    for i in ssvp-interval.service ssvp-interval.timer; do
+        sed -e "s/<INSTALLDIR>/$(echo $INSDIR | sed 's_/_\\/_g')/g" srv/systemd/$i | $PREROOT tee $INSDIR/srv/systemd/$i > /dev/null
+        $PREROOT ln -sf $INSDIR/srv/systemd/$i /usr/lib/systemd/system/$i
+    done
+    $PREROOT systemctl daemon-reload
+    echo -n "Enable timer now? n/[y] "
+    read ENATIM
+    if [ "$ENATIM" != "n" ]; then
+        $PREROOT systemctl enable --now systemctl-interval.timer
+    else
+        echo "Timer loading information available at https://ssvp.docs.amyip.net/configuration.html#systemd"
+    fi
 fi
 
 echo "Installation finished."
-
-# next todo: cron (also implement systemd timers)
-# next todo: systemd service for web server?

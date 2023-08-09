@@ -1,7 +1,18 @@
 Configuration
 =============
 
-Here's all of the configuration options:
+SSVP is very versatile, and designed to run in a wide variety of environments.
+
+Configuration file
+------------------
+
+The SSVP configuration file must be stored at :code:`srv/ssvp-config.json`. A new one can be created by:
+
+- Manually entering the options seen below
+- Running :code:`python3 installer/gen_config.py`
+- Copying and editing :code:`srv/ssvp-config.json.example`
+
+The file options are:
 
 - :code:`enable_host_ipv6`: Determines whether to enable IPv6 support. On non-Linux OSes, having this option enabled may disable IPv4 support. (optional)
     - Allowed values: :code:`true`, :code:`false`
@@ -26,6 +37,8 @@ Here's all of the configuration options:
                 "args": "list of module arguments"
             }
             
+    - The :code:`module` can be one of :code:`ping`, :code:`http`, :code:`tcp`, :code:`ssvplwc`
+
 - :code:`services`: List of services, set as an object
     - Allowed values: must fit the servers schema
 - :code:`database`: Database information
@@ -40,3 +53,37 @@ Here's all of the configuration options:
     - :code:`password`: database password
     - :code:`database`: name of database in the DB system
     - :code:`prefix`: prefix for tables
+
+Systemd
+-------
+
+If you're using systemd, there's four main options:
+
+- **Enabling**: setting a unit to run at boot (:code:`systemctl enable unit_name`)
+- **Disabling**: removing a unit from the at-boot list (:code:`systemctl disable unit_name`)
+- **Starting**: launching a unit for the current boot (:code:`systemctl start unit_name`)
+- **Stopping**: stopping a unit for the current boot (:code:`systemctl stop unit_name`)
+
+    It should be noted that, to start a unit at the same time as enabling it, you should pass the :code:`--now` flag, as in
+    :code:`systemctl enable --now unit_name`
+
+SSVP uses three main units for operation:
+
+- :code:`ssvp-gunicorn.service`: Production web server
+- :code:`ssvp-werkzeug.service`: Development web server
+- :code:`ssvp-interval.timer`: Server uptime checking timer
+
+Some important notes:
+
+1. :code:`ssvp-gunicorn.service` and :code:`ssvp-werkzeug.service` should not be run at the same time; you only need one web server.
+   If you try and run both at once, systemd will kill the first one.
+2. For those with some experience in systemd, it is very important that :code:`ssvp-interval.timer` not have its suffix left off (running as :code:`systemctl start ssvp-interval`).
+   Doing so will just run the server uptime checker just once, and not periodically.
+3. Do not remove :code:`ssvp-interval.service`; it gets called by :code:`ssvp-interval.timer`.
+
+So, for instance, to set up a standard configuration:
+
+.. code-block:: bash
+
+    systemctl enable --now ssvp-gunicorn.service
+    systemctl enable --now ssvp-interval.timer

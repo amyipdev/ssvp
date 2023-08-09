@@ -1,0 +1,12 @@
+[Unit]
+Description=ssvp (server statistics viewer project) production server
+Documentation=https://ssvp.docs.amyip.net
+Conflicts=ssvp-werkzeug
+
+[Service]
+Type=simple
+ExecStart=<INSTALLDIR>/venv-wrapper.sh srv/gunicorn.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
