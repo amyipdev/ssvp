@@ -31,7 +31,7 @@ import getdb
 
 app = Flask(__name__, template_folder="../web")
 cd = os.path.dirname(__file__)
-config = json.load(open(f"{cd}/ssvp-config.json", "r"))
+config = json.load(open(x if (x := os.getenv("SSVP_CONFIG")) else f"{cd}/ssvp-config.json", "r"))
 db = getdb.get_handler(config["database"])
 
 

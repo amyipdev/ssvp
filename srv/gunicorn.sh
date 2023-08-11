@@ -30,8 +30,12 @@ set -e
 
 cd "$(dirname "$0")"
 
-SSL=$(jq -j .ssl ssvp-config.json)
-PORT=$(jq -j .port ssvp-config.json)
+if [ "$SSVP_CONFIG" == "" ]; then
+    SSVP_CONFIG=ssvp-config.json
+fi
+
+SSL=$(jq -j .ssl $SSVP_CONFIG)
+PORT=$(jq -j .port $SSVP_CONFIG)
 
 if [ $PORT == "null" ]; then
     if [ $SSL != "null" ]; then

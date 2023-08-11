@@ -28,7 +28,7 @@ import getdb
 import test_modules
 
 cd = os.path.dirname(__file__)
-config = json.load(open(f"{cd}/ssvp-config.json", "r"))
+config = json.load(open(x if (x := os.getenv("SSVP_CONFIG")) else f"{cd}/ssvp-config.json", "r"))
 db = getdb.get_handler(config["database"])
 
 
