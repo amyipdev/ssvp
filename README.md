@@ -22,13 +22,19 @@ The main thing that differs SSVP from other status pages is that it's designed f
 
 **Full installation guide**: https://ssvp.docs.amyip.net/installing.html
 
+You need to initialize a database software - either mysql, postgres, or sqlite (can be done by the installer).
+
+### NixOS (23.11/unstable or later)
+
+Read the [NixOS section](https://ssvp.docs.amyip.net/installing.html#NixOS) of the documentation. 
+
+### Other Distributions
+
 - Clone the repostiory:
 
 ```sh
 git clone --depth=1 https://github.com/amyipdev/ssvp
 ```
-
-- Set up a database service (sqlite3, mysql, mariadb, or postgres)
 
 Run the installer:
 ```sh
