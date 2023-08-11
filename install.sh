@@ -1,4 +1,3 @@
-#!/usr/bin/bash
 # SPDX-License-Identifier: AGPL-3.0-or-later
 #
 # ssvp: server statistics viewer project
