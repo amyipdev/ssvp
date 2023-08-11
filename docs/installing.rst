@@ -1,19 +1,68 @@
 Installation
 ============
 
-Installation of SSVP is usually simple, thanks to the easy installer (:code:`./install.sh`).
+Installation of SSVP is usually simple, thanks to the
+easy installer (:code:`./install.sh`).
 
 Supported Operating Systems
 ---------------------------
 
-Right now, we're currently focusing on just supporting Linux. \*BSD and macOS support may come in the future; Windows support is unlikely.
+Support has a few main levels:
 
-Theoretically, any Linux distribution should work. We currently only officially support **Debian 12** and **Fedora 38**.
+- Level 0: **Great Support**. Every commit is thoroughly tested on these
+  levels, usually due to developers running this on their own machines.
+  Support on these should be perfect. It is not necessary for a platform
+  to be level 0 for SSVP to be production-ready on it; however, level 0
+  platforms are the least likely to have bugs.
+- Level 1: **Good Support**. These are environments known to work well.
+  No workarounds should be required. These platforms should survive major
+  changes to SSVP with ease, are tested in pipelines, and will always be
+  tested before any `"minor" <https://semver.org/>`_ releases.
+  They should be perfectly fine for production.
+- Level 2: **Decent Support**. These environments should work just fine.
+  Minimal to no workarounds should be required. It is recommended to run
+  a release version of SSVP on these platforms, instead of running main.
+  Minor releases will have changes tested; however, testing may not be
+  as thorough. These are still fine to use in production, but a level 1
+  platform is recommended.
+- Level 3: **Theoretical Support**. In theory, this platform should work
+  fine; it might have even been tested once. However, it's unknown whether
+  it works for sure. These platforms may require workarounds, and are not
+  recommended.
+- Level 4: **Unknown Support**. These platforms have completely unknown
+  support. They have never been tested. Workarounds will likely be required.
+- Level -1: **Borked**. These platforms are known not to work. If you'd like
+  to help make them work, feel free to `contribute <contributing.html>`_.
 
-Our dependency installer currently has support for most **apt**-based and **dnf/yum**-based distributions. Support for other package managers is a `planned feature <https://github.com/amyipdev/ssvp/issues/23>`_.
-The dependency verifier works on all systems, **but cannot check the presence of libpq and its headers**.
+..
+  TODO: alphabetize
+
+.. list-table::
+
+  * - Operating System
+    - Support Level
+    - Required OS Version
+    - Packaging Info
+  * - Fedora
+    - 0
+    - unknown
+    -
+  * - Debian
+    - 0
+    - unknown
+    -
+  * - NixOS
+    - 1
+    - 23.11/unstable
+    -
+  * - Ubuntu
+    - 3
+    - unknown
+    -
 
 If you have to install dependencies manually, be aware that you need all of the packages list `here <https://github.com/amyipdev/ssvp/blob/main/installer/autoinstall-deps-system.sh>`_.
+
+If you're on **NixOS**, jump to the :ref:`NixOS instructions<NixOS>`.
 
 Downloading SSVP
 ----------------
@@ -71,3 +120,42 @@ You're now done with the installation. You can run the server by running `srv/tm
 and disconnect from it by pressing `CTRL-b d`.
 
 If you need to change settings in your configuration file, please see the `configuration guide <configuration.html>`_.
+
+NixOS
+-----
+
+.. _NixOS:
+
+This section is only necessary for those using NixOS.
+
+Because the Nix installer can't create a configuration file of its own, you need to create one.
+See `the configuration manual <configuration.html>`_ for how to do this.
+
+First, you need to open up your configuration file (either a local one, or `/etc/nixos/configuration.nix`). Locate the :code:`let` list, and add:
+
+.. code-block:: nix
+
+    ssvp = builtins.fetchTarball "https://github.com/amyipdev/ssvp/archive/nix-shell-distrib.tar.gz";
+
+Then, locate the :code:`imports` list, and add:
+
+.. code-block:: nix
+
+    "${ssvp}/service.nix"
+
+Below the end of the imports list, then add:
+
+.. code-block:: nix
+
+    services.ssvp = {
+        enable = true;
+        configFile = "/path/to/ssvp-config-file";
+    }
+
+Save and exit the file. Then, reload your nix config:
+
+.. code-block:: bash
+
+    nixos-reload switch
+
+SSVP is now up and running.    

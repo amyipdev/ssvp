@@ -32,7 +32,6 @@ in {
 		enable = mkEnableOption "SSVP Production Environment";
 		configFile = mkOption {
 			type = types.str;
-			default = "${ins}/srv/ssvp-config.json";
 			description = "Configuration file";
 		};
 	};
