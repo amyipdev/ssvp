@@ -70,6 +70,8 @@ If your commit is resolving a bug, add another line, where XX is the issue numbe
 
     Fixes: #XX
     
+There's also other important tags to add on; `we use the Linux kernel project's system for useful tags <https://www.kernel.org/doc/html/latest/process/submitting-patches.html>`_.
+
 When you're done creating commits, run the following command:
 
 .. code-block::

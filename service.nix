@@ -4,11 +4,11 @@ with lib;
 
 let 
 	python3 = pkgs.python311.withPackages (ps: with ps; [
-        	flask
-        	mysql-connector
-        	ping3
-        	requests
-        	psycopg2
+        flask
+        mysql-connector
+        ping3
+		requests
+        psycopg2
 		gunicorn
 	]);
 	
