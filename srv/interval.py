@@ -42,5 +42,5 @@ def handle_servers(srv: tuple):
     db.update_cached_stats(srv[0], st)
 
 
-with multiprocessing.Pool(8) as p:
+with multiprocessing.Pool(int(x) if (x := os.getenv("SSVP_THREADS")) else 4 * multiprocessing.cpu_count()) as p:
     p.map(handle_servers, list(config["servers"].items()) + list(config["services"].items()))

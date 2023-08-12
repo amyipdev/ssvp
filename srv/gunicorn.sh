@@ -60,4 +60,8 @@ else
     BINDADDR="[::]:$PORT"
 fi
 
-gunicorn -w $(( $(nproc) * 2 )) 'app:app' -b $BINDADDR $SSLARGS
+if [ "$SSVP_THREADS" == "" ]; then
+    SSVP_THREADS=$(( 2 * $(nproc) ))
+fi
+
+gunicorn -w $SSVP_THREADS 'app:app' -b $BINDADDR $SSLARGS
