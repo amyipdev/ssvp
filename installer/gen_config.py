@@ -56,18 +56,19 @@ config["instance_name"] = input("Name of SSVP instance: ")
 if (x := input("Splash text (leave blank for no splash): ")) != "":
     config["splash"] = x
 
-config["servers"] = {}
-inp = ""
-while True:
-    inp = input("Input name of server, or 'end' to stop: ")
-    if inp == "end":
-        break
-    config["servers"][inp] = {
-        "ip": input("Server IP address: "),
-        "module": input("Detector module (ping/tcp/http/ssvplwc): "),
-        "args": input("Arguments for module (usually port number): ")
-    }
-    print(f"Server {inp} added")
+for srvtype in ("servers", "services"):
+    config[srvtype] = {}
+    inp = ""
+    while True:
+        inp = input(f"Input name of {srvtype}, or 'end' to stop: ")
+        if inp == "end":
+            break
+        config[srvtype][inp] = {
+            "ip": input("Instance IP address: "),
+            "module": input("Detector module (ping/tcp/http/ssvplwc): "),
+            "args": input("Arguments for module (usually port number): ")
+        }
+        print(f"Server {inp} added")
 
 # TODO: update this when services are implemented
 # TODO: abstract server logic, since services use the same logic
