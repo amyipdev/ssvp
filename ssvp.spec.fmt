@@ -21,14 +21,22 @@ npm i
 %make_build
 
 %install
-mkdir -p -m0755 %{buildroot}/opt/
+mkdir -p -m0755 %{buildroot}/opt/ssvp
 mkdir -p %{buildroot}/usr/lib/systemd/system
 # TODO: just copy necessary folders
-cp -a %{_builddir}/. %{buildroot}/opt/
+cp -a %{_builddir}/ssvp/installer %{_builddir}/ssvp/assets %{_builddir}/ssvp/srv %{_builddir}/ssvp/web %{buildroot}/opt/ssvp
+cp %{_builddir}/ssvp/LICENSE %{_builddir}/ssvp/README.md %{_builddir}/ssvp/venv-wrapper.sh %{_builddir}/ssvp/release-info.json %{buildroot}/opt/ssvp
 sed -e "s.<INSTALLDIR>./opt/ssvp.g" %{buildroot}/opt/ssvp/srv/systemd/ssvp-gunicorn.service > %{buildroot}/usr/lib/systemd/system/ssvp-gunicorn.service
 sed -e "s.<INSTALLDIR>./opt/ssvp.g" %{buildroot}/opt/ssvp/srv/systemd/ssvp-werkzeug.service > %{buildroot}/usr/lib/systemd/system/ssvp-werkzeug.service
 sed -e "s.<INSTALLDIR>./opt/ssvp.g" %{buildroot}/opt/ssvp/srv/systemd/ssvp-interval.timer > %{buildroot}/usr/lib/systemd/system/ssvp-interval.timer
 sed -e "s.<INSTALLDIR>./opt/ssvp.g" %{buildroot}/opt/ssvp/srv/systemd/ssvp-interval.service > %{buildroot}/usr/lib/systemd/system/ssvp-interval.service
+rm -rf %{buildroot}/srv/__pycache__ %{buildroot}/ssvplwc %{buildroot}/systemd
+rm -f %{buildroot}/opt/ssvp/srv/ssvp-config.json
+
+%preun
+systemctl disable --now ssvp-gunicorn
+systemctl disable --now ssvp-werkzeug
+systemctl disable --now ssvp-interval.timer
 
 %files
 %license LICENSE

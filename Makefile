@@ -63,7 +63,7 @@ dir_artifacts:
 
 tar: clean
 	$(MAKE) dir_artifacts
-	tar --exclude "artifacts" -czf artifacts/ssvp-$(VRSN).tar.gz ../$(shell basename $(shell pwd))
+	tar --exclude "artifacts" --exclude ".fleet" --exclude ".github" --exclude "docs" --exclude "srv/ssvp-config.json" --exclude "node_modules" --exclude "*/__pycache__" --exclude ".git" -czf artifacts/ssvp-$(VRSN).tar.gz ../$(shell basename $(shell pwd))
 
 rpm: tar
 	mkdir -p rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
