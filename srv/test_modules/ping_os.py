@@ -20,29 +20,14 @@
 # License version 3 is available at, for your convenience,
 # https://www.gnu.org/licenses/agpl-3.0.en.html.
 
-from . import httpt
-from . import ssvplwc
-from . import tcpt
-
-modules = {
-    "http": httpt.http_t,
-    "ssvplwc": ssvplwc.ssvplwc_t,
-    "tcp": tcpt.tcp_t
-}
-
-try:
-    from . import ping
-    modules["ping"] = ping.ping_t
-except ModuleNotFoundError:
-    from . import ping_os
-    modules["ping"] = ping_os.ping_t
+import os
 
 
-# bool 0: status report
-# bool 1: was skipped
-def run_test(srv: dict) -> (bool, bool):
-    try:
-        return modules[srv["module"]](srv), False
-    except KeyError:
-        print("ssvp: skipping unknown module", srv["module"])
-        return None, True
+def ping_t(srv: dict) -> bool:
+    match os.name:
+        case "posix":
+            return (os.system(f"ping -c 1 {srv['ip']}") >> 8) == 0
+        case "nt":
+            return os.system(f"ping -n 1 {srv['ip']}") == 0
+        case _:
+            raise Exception("Unsupported OS for ping_os")
