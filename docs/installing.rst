@@ -131,17 +131,17 @@ RPMs
 
 First, get the RPM for SSVP. This should be from the most recent release on GitHub, and is specific to your distro.
 
-Next, install the RPM (note that the filename depends on the version, distro, and system architecture):
+Next, install the RPM (note that the filename depends on the version and distro):
 
 .. code-block:: bash
 
-  dnf install -y ssvp-VERSION-1.DISTRO.ARCH.rpm
+  dnf install -y ssvp-VERSION-1.DISTRO.noarch.rpm
 
 For instance, to install v0.3.0 for Fedora:
 
 .. code-block:: bash
 
-  dnf install -y ssvp-0.3.0-1.fc38.x86_64.rpm
+  dnf install -y ssvp-0.3.0-1.fc38.noarch.rpm
 
 Then, using :code:`/opt/ssvp` as the base directory, make sure to `configure <configuration.html>`_ (make a file, and set up systemd), and you're done!
 
