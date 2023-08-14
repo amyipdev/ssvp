@@ -41,6 +41,11 @@ Tagging a release is a great occasion, but there's several things to keep in min
 Packaging
 ---------
 
+When packaging, local changes to :code:`release-info.json` should be made, removing the :code:`+` and adding any appropriate suffixes.
+
+For instance, for in-progress :code:`v0.3.0`, the release version is set as :code:`0.3.0+`. When packaging, this should be changed
+to :code:`0.3.0`. The commit after the tag would then change the release version to :code:`0.4.0+`.
+
 RPMs
 ~~~~
 
