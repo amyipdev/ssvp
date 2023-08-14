@@ -1,6 +1,6 @@
 Flask==2.3.2
 mysql-connector-python==8.1.0
-ping3==4.8.4
+ping3==4.0.4
 requests==2.31.0
 psycopg2==2.9.6
 pyopenssl==23.2.0

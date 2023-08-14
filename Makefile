@@ -27,6 +27,7 @@ INSTALLDIR :=
 TSC := npx tsc
 TSC_OPTIONS := --noEmitOnError --module es2015
 OGUSER := $(USER)
+VRSN = $(shell jq -j .version release-info.json)
 
 .PHONY: docs
 
@@ -37,6 +38,12 @@ all:
 	$(SASS) scss/custom.scss:assets/css/custom_bootstrap.css $(SASS_OPTIONS)
 	$(TSC) $(TSC_OPTIONS) --outDir assets/js js/*.ts
 	
+simple_building:
+	python3 -m venv venv
+	venv/bin/pip3 install -r requirements.txt
+	npm i
+	$(MAKE)
+
 ssvplwc:
 	cd srv/ssvplwc; cargo run --release
 
@@ -46,7 +53,20 @@ install:
 	chown -R $(OGUSER):$(OGUSER) $(INSTALLDIR)
 
 clean:
-	rm -rf .sass-cache assets node_modules venv docs/_build
+	rm -rf .sass-cache assets node_modules venv docs/_build artifacts/ rpmbuild/ srv/ssvplwc/target
 
 docs:
 	make -C docs html
+
+dir_artifacts:
+	mkdir artifacts
+
+tar: clean
+	$(MAKE) dir_artifacts
+	tar --exclude "artifacts" -czf artifacts/ssvp-$(VRSN).tar.gz ../$(shell basename $(shell pwd))
+
+rpm: tar
+	mkdir -p rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}
+	cp artifacts/ssvp-$(VRSN).tar.gz rpmbuild/SOURCES/ssvp-$(VRSN).tar.gz
+	sed -e "s/<VERSION>/$(VRSN)/g" ssvp.spec.fmt > rpmbuild/SPECS/ssvp.spec
+	cd rpmbuild; rpmbuild --nodebuginfo --define "_topdir $(shell pwd)/rpmbuild" -v -ba SPECS/ssvp.spec

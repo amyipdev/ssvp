@@ -38,3 +38,25 @@ Tagging a release is a great occasion, but there's several things to keep in min
 - Verify documentation is up-to-date - both in terms of instructions, and in terms of Sphinx's version number
   (this is something that's not always covered)
   
+Packaging
+---------
+
+RPMs
+~~~~
+
+Building should only be done on a **clean system**. Make sure you don't have an SSVP config file, or anything else;
+you risk leaking secrets.
+
+First, make sure you have the necessary dependencies installed:
+
+.. code-block:: bash
+
+  dnf install -y rpmdevtools rpmlint
+
+Then, just run:
+
+.. code-block:: bash
+
+  make rpm
+
+The RPM will be generated at :code:`rpmbuild/RPMS`.

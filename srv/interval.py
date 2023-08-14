@@ -35,7 +35,9 @@ db = getdb.get_handler(config["database"])
 # TODO: implement services
 def handle_servers(srv: tuple):
     r = test_modules.run_test(srv[1])
-    st = -1 if r is None else (0 if r else 2)
+    if r[1]:
+        return 
+    st = -1 if r[0] is None else (0 if r[0] else 2)
     if st != -1:
         db.insert_interval_log(srv[0], False if not st else True)
     st = db.handle_daily_record(srv[0], st)

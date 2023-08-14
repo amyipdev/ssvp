@@ -3,7 +3,7 @@
 </div>
 <div align="center">
     
-[![GitHub](https://img.shields.io/github/license/amyipdev/ssvp)](https://www.gnu.org/licenses/agpl-3.0.en.html) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/amyipdev/ssvp) [![Static Badge](https://img.shields.io/badge/documentation-ssvp.docs.amyip.net-blue?link=https%3A%2F%2Fssvp.docs.amyip.net%2Findex.html)](https://ssvp.docs.amyip.net)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/amyipdev/ssvp) [![GitHub](https://img.shields.io/github/license/amyipdev/ssvp)](https://www.gnu.org/licenses/agpl-3.0.en.html) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/amyipdev/ssvp) [![Static Badge](https://img.shields.io/badge/documentation-ssvp.docs.amyip.net-blue?link=https%3A%2F%2Fssvp.docs.amyip.net%2Findex.html)](https://ssvp.docs.amyip.net)
 
 </div>
 

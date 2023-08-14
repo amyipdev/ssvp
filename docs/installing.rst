@@ -64,6 +64,9 @@ If you have to install dependencies manually, be aware that you need all of the 
 
 If you're on **NixOS**, jump to the :ref:`NixOS instructions<NixOS>`.
 
+For RPM-based distributions, such as **Fedora**, **Alma Linux**, **Rocky Linux**, **Oracle Linux**,
+and **RHEL**, jump to the :ref:`RPM instructions<RPMs>`.
+
 Downloading SSVP
 ----------------
 
@@ -120,6 +123,27 @@ You're now done with the installation. You can run the server by running `srv/tm
 and disconnect from it by pressing `CTRL-b d`.
 
 If you need to change settings in your configuration file, please see the `configuration guide <configuration.html>`_.
+
+RPMs
+----
+
+.. _RPMs:
+
+First, get the RPM for SSVP. This should be from the most recent release on GitHub, and is specific to your distro.
+
+Next, install the RPM (note that the filename depends on the version, distro, and system architecture):
+
+.. code-block:: bash
+
+  dnf install -y ssvp-VERSION-1.DISTRO.ARCH.rpm
+
+For instance, to install v0.3.0 for Fedora:
+
+.. code-block:: bash
+
+  dnf install -y ssvp-0.3.0-1.fc38.x86_64.rpm
+
+Then, using :code:`/opt/ssvp` as the base directory, make sure to `configure <configuration.html>`_ (make a file, and set up systemd), and you're done!
 
 NixOS
 -----

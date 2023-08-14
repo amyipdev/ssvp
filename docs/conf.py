@@ -6,10 +6,13 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+import json
+import os.path
+
 project = 'SSVP'
 copyright = '2023, Amy Parker'
 author = 'Amy Parker'
-release = 'v0.2.0'
+release = "v" + json.load(open(f"{os.path.dirname(__file__)}/../release-info.json"))["version"]
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

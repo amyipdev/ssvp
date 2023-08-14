@@ -16,3 +16,6 @@ target/
 _build/
 _static/
 _templates/
+*.tar.gz
+artifacts/
+rpmbuild/
