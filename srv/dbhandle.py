@@ -21,7 +21,9 @@
 # https://www.gnu.org/licenses/agpl-3.0.en.html.
 
 import datetime
+
 import psycopg2
+import mysql.connector
 
 
 def unimplemented():
@@ -187,6 +189,8 @@ class DBAPIAbstracted(DBAbstract):
             curr.fetchall()
         except psycopg2.ProgrammingError:
             pass
+        except mysql.connector.errors.InterfaceError:
+            pass
         conn.commit()
         curr.close()
         conn.close()
@@ -201,6 +205,8 @@ class DBAPIAbstracted(DBAbstract):
         try:
             curr.fetchall()
         except psycopg2.ProgrammingError:
+            pass
+        except mysql.connector.errors.InterfaceError:
             pass
         conn.commit()
         curr.close()
@@ -228,7 +234,12 @@ class DBAPIAbstracted(DBAbstract):
                     currentStatus = %s\
                 where serverName = %s;"
         curr.execute(self._treat_sql(sql), (srv, srv, srv, st, srv))
-        curr.fetchall()
+        try:
+            curr.fetchall()
+        except psycopg2.ProgrammingError:
+            pass
+        except mysql.connector.errors.InterfaceError:
+            pass
         conn.commit()
         curr.close()
         conn.close()
@@ -242,6 +253,8 @@ class DBAPIAbstracted(DBAbstract):
         try:
             curr.fetchall()
         except psycopg2.ProgrammingError:
+            pass
+        except mysql.connector.errors.InterfaceError:
             pass
         conn.commit()
         curr.close()
@@ -274,6 +287,8 @@ class DBAPIAbstracted(DBAbstract):
             } for x in curr.fetchall()]
         except psycopg2.ProgrammingError:
             pass
+        except mysql.connector.errors.InterfaceError:
+            pass
         curr.close()
         conn.close()
         return res
@@ -287,6 +302,8 @@ class DBAPIAbstracted(DBAbstract):
         try:
             res = curr.fetchone()[0]
         except psycopg2.ProgrammingError:
+            pass
+        except mysql.connector.errors.InterfaceError:
             pass
         curr.close()
         conn.close()
