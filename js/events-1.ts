@@ -67,7 +67,7 @@ async function fetchEventsList(page: number) {
     generateEventsTable();
 }
 
-document.getElementById("pg-bt-left")
+document.getElementById("pg-bt-left");
 
 fetchEventsList(0);
 
@@ -117,5 +117,5 @@ function generateEventsTable(): void {
     document.getElementById("events-table-gen").innerHTML = builder;
 }
 
-leftHandler.addEventListener("click", () => {fetchEventsList(currPage-1)});
-rightHandler.addEventListener("click", () => {fetchEventsList(currPage+1)});
+leftHandler.addEventListener("click", () => {fetchEventsList(currPage-1);});
+rightHandler.addEventListener("click", () => {fetchEventsList(currPage+1);});

@@ -36,7 +36,7 @@ let serverListExpanded: number = getDisplayCategory();
 let listOfServers: Array<string>;
 let listOfServices: Array<string>;
 let serverInfoList: Array<ServerInfo> = [];
-let todaysCurrentDate: Date = new Date();
+const todaysCurrentDate: Date = new Date();
 todaysCurrentDate.setUTCHours(0, 0, 0, 0);
 
 async function serverListInitialization() {
@@ -56,7 +56,7 @@ async function serverListInitialization() {
     const tr = await fetch("/api/v1/ctz_date");
     const nd: Array<number> = (await tr.text()).split("-").map((x) => parseInt(x));
     todaysCurrentDate.setUTCFullYear(nd[0], nd[1]-1, nd[2]);
-    let box: HTMLElement = document.getElementById("totality-indic");
+    const box: HTMLElement = document.getElementById("totality-indic");
     // when services are implemented,
     // add an && clause for servicesList.every
     let mx: number = 0;
@@ -78,7 +78,7 @@ async function serverListInitialization() {
             break;
         default:
             box.innerHTML = "(unknown error)";
-            box.classList.add("bg-body-tertiary")
+            box.classList.add("bg-body-tertiary");
     }
     generate_table();
     generate_accordion();
@@ -133,7 +133,7 @@ function generate_table(): void {
                     <svg class="my-2" preserveAspectRatio="none" viewBox="0 0 ${numBars*5-2} 35">`;
             for (let j: number = 0; j < numBars; ++j) {
                 // @ts-ignore
-                let d: Date = new Date(todaysCurrentDate - ((numBars-1-j)*MSD));
+                const d: Date = new Date(todaysCurrentDate - ((numBars-1-j)*MSD));
                 builder += `<rect rx="2" class="indic-${serverInfoList[sp].daily_types[j+adj]}" height="35" width="3" x="${5*j}" y="0"></rect>
                             <foreignObject x="${5*j}" y="0" height="35" width="3">
                                 <button class="border-0 m-0 p-0" style="background-color: rgba(0, 0, 0, 0%); height: 100%; width: 100%" type="button" data-bs-toggle="popover" data-bs-placement="top" data-bs-trigger="hover"

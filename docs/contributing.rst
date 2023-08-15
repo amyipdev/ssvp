@@ -43,7 +43,12 @@ Once you've chosen the name, create and switch to the branch:
 
     git checkout -b your-branch-name
     
-You can now freely modify files, building your patch. When you're ready to save an interval of your progress, run:
+You can now freely modify files, building your patch.
+
+If the patch affects real code, we recommend that you run a linter on what you changed.
+You can find out more information about linting in the `maintenance guide <maintaining.html>`_.
+
+When you're ready to save an interval of your progress, run:
 
 .. code-block:: bash
 

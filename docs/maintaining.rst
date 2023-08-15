@@ -65,3 +65,68 @@ Then, just run:
   make rpm
 
 The RPM will be generated at :code:`rpmbuild/RPMS`.
+
+Linting
+-------
+
+It is good to lint whenever you're going to commit; however, it is understood that this can be tedious.
+As such, contributors are given discretion on whether to lint. Most small issues will be caught when
+preparing for release, so lint checking is not critical; further, because of the many linting things
+that can come up that are unimportant to SSVP, we do not run linters in CI. It is absolutely imperative
+to lint, however, when preparing for a release.
+
+Linting depends on the language, and should be run on every modified file (and, for releases, every file).
+
+Python
+~~~~~~
+
+First, ensure that :code:`pylint` is installed:
+
+.. code-block:: bash
+
+  pip3 install pylint
+
+Then, for every file you need to lint, run:
+
+.. code-block:: bash
+
+  pylint <filename>
+
+All warnings should be treated as **optional**; however, we have advice on the following warnings:
+
+- **C0303/trailing-whitespace**: if your editor can fix this, it's welcome, but it's not critical.
+  This commonly occurs in GPL notices.
+- **C0301/line-too-long**: please separate into lines if reasonable If not, however, that is completely
+  fine - sometimes code readability suffers when trying to comply.
+- **Docstring objections**: C0114 and C0116 can be safely ignored. We do not use docstrings.
+- **R1732/W1514**: tread carefully. Passage into reasonably-handled functions, such as :code:`json`
+  functions, is acceptable (usage of directly passed open). However, if the file pointer is being
+  used directly, then with should be used. Unspecified encodings are generally fine, with few
+  exceptions; these exceptions cause bugs and would appear elsewhere, so relying on the linter
+  is unnecessary.
+- **C0123/unidiomatic-typecheck**: these can be optionally modified, but it is not necessary.
+  Using type is perfectly fine, and isinstance should only be used if the switch is trivial.
+- **C0411** and other import objections: these should be fixed within another commit, but are
+  not critical; don't bother fixing them in their own commit.
+
+Rust
+~~~~
+
+First, format the code:
+
+.. code-block:: bash
+
+  cargo fmt
+
+Then, use `Rust Analyzer <https://rust-analyzer.github.io/>`_ to lint the code. This can often
+be done directly in your IDE.
+
+TypeScript
+~~~~~~~~~~
+
+Just run:
+
+.. code-block:: bash
+
+  eslint js/*
+
