@@ -15,6 +15,7 @@ If you're just trying to get SSVP set up, go to the `installation guide <install
    installing
    configuration
    maintaining
+   ssvplwc
 
 
 
