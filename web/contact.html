@@ -1,0 +1,43 @@
+{% include "_header.html" %}
+
+<h1 class="text-center py-2">Contact</h1>
+
+<div class="container-fluid w-75 mx-auto py-2 pt-4">
+    {% if config["contact"] is defined %}
+        {% if config["contact"]["name"] is defined %}
+            <h2 class="text-center">{{ config["contact"]["name"] }}</h2>
+        {% endif %}
+        <div class="table-responsive">
+            <table class="table w-75 mx-auto">
+                {% if config["contact"]["mastodon"] is defined %}
+                    <tr>
+                        <th class="w-25 text-start"><i class="bi-mastodon"></i><span class="d-none d-lg-inline">&nbsp;&nbsp;&nbsp;Mastodon</span></th>
+                        <th class="w-75 text-end py-auto"><a href={{ "https://" + config["contact"]["mastodon"].split("@")[2] + "/@" + config["contact"]["mastodon"].split("@")[1] }}>{{ config["contact"]["mastodon"] }}</a></th>
+                    </tr>
+                {% endif %}
+                {% if config["contact"]["github"] is defined %}
+                    <tr>
+                        <th class="w-25 text-start"><i class="bi-github"></i><span class="d-none d-lg-inline">&nbsp;&nbsp;&nbsp;GitHub</span></th>
+                        <th class="w-75 text-end py-auto"><a href={{ "https://github.com/" + config["contact"]["github"] }}>{{ config["contact"]["github"] }}</a></th>
+                    </tr>
+                {% endif %}
+                {% if config["contact"]["git"] is defined %}
+                    <tr>
+                        <th class="w-25 text-start"><i class="bi-github"></i><span class="d-none d-lg-inline">&nbsp;&nbsp;&nbsp;Git</span></th>
+                        <th class="w-75 text-end py-auto"><a href={{ config["contact"]["git"] }}>{{ config["contact"]["git"] }}</a></th>
+                    </tr>
+                {% endif %}
+                {% if config["contact"]["email"] is defined %}
+                    <tr>
+                        <th class="w-25 text-start"><i class="bi-envelope-at-fill"></i><span class="d-none d-lg-inline">&nbsp;&nbsp;&nbsp;Email</span></th>
+                        <th class="w-75 text-end py-auto"><a href={{ "mailto:" + config["contact"]["email"] }}>{{ config["contact"]["email"] }}</a></th>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    {% else %}
+        <p class="text-center">Contact information is not provided. If this is a bug, report it to <a href="https://github.com/amyipdev/ssvp/issues">SSVP</a>.</p>
+    {% endif %}
+</div>
+
+{% include "_footer.html" %}

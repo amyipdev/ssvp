@@ -52,6 +52,11 @@ def r_events():
     return render_template("events.html", config=config, site="events")
 
 
+@app.route("/contact")
+def r_contact():
+    return render_template("contact.html", config=config, site="contact")
+
+
 @app.route("/assets/<path:path>")
 def assets(path: str):
     return send_from_directory("../assets/", path)
