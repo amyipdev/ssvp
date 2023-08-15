@@ -86,6 +86,17 @@ if config["database"]["type"] in ("mysql", "postgres"):
     config["database"]["password"] = input("Database password: ")
     config["database"]["port"] = int(input("Database port: "))
     
+if input("Set up contact info? n/[y] ") != "n":
+    config["contact"] = {}
+    for n in ("Name", "Mastodon", "GitHub", "Git", "Email"):
+        if (x := input("{n}: value/[none] ")) != "":
+            config[n.lower()] = x
+
+if input("Use local documentation? y/[n] ") == "y":
+    config["docs"] = "local"
+else:
+    config["docs"] = "pages"
+
 filename = "srv/ssvp-config." + "".join(random.choice(string.hexdigits) for _ in range(8)) + ".json"
 json.dump(config, open(filename, "w"), indent=4, separators=(',', ': '))
 print(f"\nConfig succesfully printed to srv/{filename}.\n"

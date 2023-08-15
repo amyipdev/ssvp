@@ -21,7 +21,7 @@
 # License version 3 is available at, for your convenience,
 # https://www.gnu.org/licenses/agpl-3.0.en.html. 
 
-from flask import Flask, render_template, send_from_directory, jsonify, request
+from flask import Flask, render_template, send_from_directory, jsonify, request, redirect
 
 import json
 import os
@@ -37,24 +37,35 @@ releaseinfo = json.load(open(f"{cd}/../release-info.json"))
 
 
 @app.route("/")
-@app.route("/status")
+@app.route("/status/")
 def index():
     return render_template("index.html", config=config, site="index")
 
 
-@app.route("/credits")
+@app.route("/credits/")
 def r_credits():
     return render_template("credits.html", config=config, site="credits", SSVP_VERSION=releaseinfo["version"])
 
 
-@app.route("/events")
+@app.route("/events/")
 def r_events():
     return render_template("events.html", config=config, site="events")
 
 
-@app.route("/contact")
+@app.route("/contact/")
 def r_contact():
     return render_template("contact.html", config=config, site="contact")
+
+
+if config.get("docs") == "local":
+    @app.route("/docs/")
+    def docsbase():
+        return redirect("/docs/index.html", code=301)
+
+
+    @app.route("/docs/<path:path>")
+    def docspath(path: str):
+        return send_from_directory("../docs/_build/html/", path)
 
 
 @app.route("/assets/<path:path>")
@@ -62,39 +73,39 @@ def assets(path: str):
     return send_from_directory("../assets/", path)
 
 
-@app.route("/api/v1/servers")
+@app.route("/api/v1/servers/")
 def api_v1_list_servers():
     return jsonify(list(config["servers"].keys()))
 
 
-@app.route("/api/v1/services")
+@app.route("/api/v1/services/")
 def api_v1_services():
     return jsonify(list(config["services"].keys()))
 
 
-@app.route("/api/v1/uptime_raw/<srv>")
+@app.route("/api/v1/uptime_raw/<srv>/")
 def api_v1_uptime_raw(srv: str):
     return jsonify(db.get_uptime_stats(srv))
 
 
-@app.route("/api/v1/uptime/<srv>")
+@app.route("/api/v1/uptime/<srv>/")
 def api_v1_uptime(srv: str):
     base = db.get_uptime_stats(srv)
     base["daily_types"] = db.get_daily_data(srv)
     return jsonify(base)
 
 
-@app.route("/api/v1/ctz_date")
+@app.route("/api/v1/ctz_date/")
 def api_v1_ctz_date():
     return str(datetime.date.today())
 
 
-@app.route("/api/v1/events")
+@app.route("/api/v1/events/")
 def api_v1_events():
     return jsonify(db.fetch_events(int(request.args.get("lim", 100)), int(request.args.get("page", 0))))
 
 
-@app.route("/api/v1/size/events")
+@app.route("/api/v1/size/events/")
 def api_v1_size_events():
     return jsonify(db.size_events())
 

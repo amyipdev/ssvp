@@ -18,5 +18,13 @@
         "password": "ssvp-demo",
         "database": "ssvp",
         "prefix": "ssvp_"
-    }
+    },
+    "contact": {
+        "name": "Sample Name",
+        "mastodon": "@sample@mastodon.social",
+        "github": "torvalds",
+        "git": "https://gitlab.gnome.org",
+        "email": "gregkh@kernel.org"
+    },
+    "docs": "pages"
 }

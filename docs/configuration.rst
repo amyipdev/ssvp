@@ -53,6 +53,13 @@ The file options are:
     - :code:`password`: database password
     - :code:`database`: name of database in the DB system
     - :code:`prefix`: prefix for tables
+- :code:`contact`: user contact information (optional)
+    - :code:`name`: user's name, display name, or organization name
+    - :code:`mastodon`: mastodon profile (format: :code:`@username@home.server`)
+    - :code:`github`: GitHub profile (just the username)
+    - :code:`git`: link to custom git server
+    - :code:`email`: email address
+- :code:`docs`: set to :code:`"local"` to use local documentation instead of `GitHub Pages <https://ssvp.docs.amyip.net>_    
 
 Systemd
 -------
