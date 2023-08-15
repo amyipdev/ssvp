@@ -33,6 +33,7 @@ app = Flask(__name__, template_folder="../web")
 cd = os.path.dirname(__file__)
 config = json.load(open(x if (x := os.getenv("SSVP_CONFIG")) else f"{cd}/ssvp-config.json", "r"))
 db = getdb.get_handler(config["database"])
+releaseinfo = json.load(open(f"{cd}/../release-info.json"))
 
 
 @app.route("/")
@@ -43,7 +44,7 @@ def index():
 
 @app.route("/credits")
 def r_credits():
-    return render_template("credits.html", config=config, site="credits")
+    return render_template("credits.html", config=config, site="credits", SSVP_VERSION=releaseinfo["version"])
 
 
 @app.route("/events")
