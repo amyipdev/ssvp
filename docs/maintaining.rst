@@ -56,7 +56,7 @@ First, make sure you have the necessary dependencies installed:
 
 .. code-block:: bash
 
-  dnf install -y rpmdevtools rpmlint
+  dnf install -y make jq nodejs nodejs-npm rpmdevtools rpmlint
 
 Then, just run:
 
@@ -65,6 +65,68 @@ Then, just run:
   make rpm
 
 The RPM will be generated at :code:`rpmbuild/RPMS`.
+
+Enterprise Linux RPMs
+<<<<<<<<<<<<<<<<<<<<<
+
+.. _ELRPMs:
+
+There is a `known issue <https://github.com/amyipdev/ssvp/issues/49>`_ when building RPMs or using
+:code:`install.sh` on Enterprise Linux distributions (**Rocky**, **RHEL**, **Alma**, **CentOS**, **Oracle**).
+
+Detection
+>>>>>>>>>
+
+You can tell if your distribution is Enterprise Linux by running the following command on a known-installed
+package (:code:`bash` used as an example):
+
+.. code-block:: bash
+
+  dnf list bash
+
+and then looking at the last component of the second column. If the system is Enterprise Linux, it will
+be of the format :code:`elN`, where N is some number. If it does not contain :code:`el`, then it is not
+Enterprise Linux, and this is not the bug source.
+
+Fixing
+>>>>>>
+
+The fix depends on whether you are using :code:`install.sh` or using the RPM; if the former, apply the
+following edits to :code:`srv/autoinstall-deps-system.sh`, if the latter, to :code:`ssvp.spec.fmt`.
+
+- :code:`nodejs-npm` changed to :code:`npm`
+
+You also need to install :code:`python3-pip`, and then run:
+
+.. code-block:: bash
+
+  pip3 install pyopenssl gunicorn Flask mysql-connector-python
+
+If you are building an RPM, you must remove those packages from :code:`ssvp.spec.fmt`.
+
+SUSE
+<<<<
+
+.. _SUSE:
+
+The development package installation list is slightly different:
+
+.. code-block:: bash
+
+  zypper install make nodejs npm rpm-build rpmdevtools rpmlint jq
+
+You can then build and install the RPM as normal. Two things will come up:
+
+1. You'll be asked about python3-flask. You should just choose to ignore
+   the issue. You then later need to run:
+
+   .. code-block:: bash
+
+      zypper install python3-pip
+      pip3 install Flask
+
+2. After that, it'll throw up a warning about the RPM being unsigned. This
+   is fully safe to ignore.
 
 Linting
 -------

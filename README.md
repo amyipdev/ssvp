@@ -30,7 +30,16 @@ Read the [NixOS section](https://ssvp.docs.amyip.net/installing.html#NixOS) of t
 
 ### RPM-based (Fedora, Alma, Rocky, CentOS, RHEL, etc)
 
-Read the [RPM section](https://ssvp.docs.amyip.net/installing.html#RPMs) of the documentation.
+Enterprise Linux distributions require you manually install some of the necessary dependencies:
+
+```sh
+dnf install python3-pip
+pip3 install pyopenssl mysql-connector-python Flask gunicorn
+```
+
+To install, read the [RPM section](https://ssvp.docs.amyip.net/installing.html#RPMs) of the documentation.
+Sub-instructions also exist for SUSE, see the [SUSE guide](https://ssvp.docs.amyip.net/maintaining.html#SUSE)
+(you can skip the RPM building instructions) for assistance.
 
 ### Other Distributions
 

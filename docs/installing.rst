@@ -42,25 +42,38 @@ Support has a few main levels:
   * - Operating System
     - Support Level
     - Packaging Info
-  * - Fedora 38
+  * - Alma Linux 9
+    - 2
+    -
+  * - CentOS Stream 9
+    - 2
+    -
+  * - Debian Linux 12
     - 0
     -
-  * - Debian 12
+  * - Fedora Linux 38
     - 0
     -
   * - NixOS 23.11/unstable
     - 1
     -
-  * - Ubuntu
+  * - OpenSUSE 15.4
+    - 2
+    -
+  * - Rocky Linux 9
+    - 2
+    -
+  * - Ubuntu Linux
     - 3
     -
+
 
 If you have to install dependencies manually, be aware that you need all of the packages list `here <https://github.com/amyipdev/ssvp/blob/main/installer/autoinstall-deps-system.sh>`_.
 
 If you're on **NixOS**, jump to the :ref:`NixOS instructions<NixOS>`.
 
 For RPM-based distributions, such as **Fedora**, **Alma Linux**, **Rocky Linux**, **Oracle Linux**,
-and **RHEL**, jump to the :ref:`RPM instructions<RPMs>`.
+and **RHEL**, jump to the :ref:`RPM instructions<RPMs>`. `Sub-instructions <maintaining.html#SUSE>`_ also exist for SUSE.
 
 Downloading SSVP
 ----------------
@@ -76,6 +89,10 @@ Once Git is installed, run:
 Running the Installation Script
 -------------------------------
 
+*If you're having issues with :code:`install.sh` on an RPM-based system
+(particularly Enterprise Linux systems), please read our* `guide <maintaining.html#ELRPMs>`_
+*on the issue.*
+
 To run the installation script, from the SSVP download directory, run:
 
 .. code-block:: bash
@@ -87,13 +104,7 @@ Installation Components
 
 The installer will prompt you on whether to run several of its modules. Defaults are always in brackets, such as :code:`not default/[default]`.
 
-The first option is to autoinstall system dependencies. You should only respond yes if you are on a **Fedora** or **Debian** derivative system. This includes:
-
-- `Red Hat Enterprise Linux <https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux>`_
-- `Fedora Linux <https://fedoraproject.org/>`_
-- `Debian Linux <https://www.debian.org/>`_
-- `Ubuntu Linux <https://ubuntu.com/>`_ (and its derivatives, such as `Kubuntu <https://kubuntu.org/>`_ and `Linux Mint <https://linuxmint.com/>`_)
-- `CentOS Linux <https://centos.org/>`_, `Rocky Linux <https://rockylinux.org/>`_, and `Alma Linux <https://almalinux.org/>`_
+The first option is to autoinstall system dependencies. This only works on certain systems; it's generally mostly recommended to just attempt this on Level 0 systems.
 
 If you decline the option, you'll be given the choice to verify your system dependencies. This just checks that they're all available in the PATH, and works on any system.
 
@@ -125,6 +136,7 @@ RPMs
 .. _RPMs:
 
 First, get the RPM for SSVP. This should be from the most recent release on GitHub, and is specific to your distro.
+*Note: SUSE does not use a distro identifier.*
 
 Next, install the RPM (note that the filename depends on the version and distro):
 
