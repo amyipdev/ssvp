@@ -26,7 +26,11 @@ You need to initialize a database software - either mysql, postgres, or sqlite (
 
 ### NixOS (23.11/unstable or later)
 
-Read the [NixOS section](https://ssvp.docs.amyip.net/installing.html#NixOS) of the documentation. 
+Read the [NixOS section](https://ssvp.docs.amyip.net/installing.html#NixOS) of the documentation.
+
+### RPM-based (Fedora, Alma, Rocky, CentOS, RHEL, etc)
+
+Read the [RPM section](https://ssvp.docs.amyip.net/installing.html#RPMs) of the documentation.
 
 ### Other Distributions
 
