@@ -41,23 +41,18 @@ Support has a few main levels:
 
   * - Operating System
     - Support Level
-    - Required OS Version
     - Packaging Info
-  * - Fedora
+  * - Fedora 38
     - 0
-    - unknown
     -
-  * - Debian
+  * - Debian 12
     - 0
-    - unknown
     -
-  * - NixOS
+  * - NixOS 23.11/unstable
     - 1
-    - 23.11/unstable
     -
   * - Ubuntu
     - 3
-    - unknown
     -
 
 If you have to install dependencies manually, be aware that you need all of the packages list `here <https://github.com/amyipdev/ssvp/blob/main/installer/autoinstall-deps-system.sh>`_.
