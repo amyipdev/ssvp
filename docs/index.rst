@@ -16,6 +16,7 @@ If you're just trying to get SSVP set up, go to the `installation guide <install
    configuration
    maintaining
    ssvplwc
+   users
 
 
 

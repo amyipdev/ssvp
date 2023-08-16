@@ -16,6 +16,8 @@ The file options are:
 
 - :code:`enable_host_ipv6`: Determines whether to enable IPv6 support. On non-Linux OSes, having this option enabled may disable IPv4 support. (optional)
     - Allowed values: :code:`true`, :code:`false`
+- :code:`hostname`: hostname for RSS and other services (optional)
+    - If specified, this should be of the form :code:`(protocol)://(hostname)[: port]`
 - :code:`ssl`: Determines SSL support, and configuration settings.
     - Allowed values:
         - :code:`null`: disables SSL
@@ -59,7 +61,7 @@ The file options are:
     - :code:`github`: GitHub profile (just the username)
     - :code:`git`: link to custom git server
     - :code:`email`: email address
-- :code:`docs`: set to :code:`"local"` to use local documentation instead of `GitHub Pages <https://ssvp.docs.amyip.net>_    
+- :code:`docs`: set to :code:`"local"` to use local documentation instead of `GitHub Pages <https://ssvp.docs.amyip.net>`_    
 
 Systemd
 -------

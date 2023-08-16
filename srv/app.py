@@ -21,17 +21,30 @@
 # License version 3 is available at, for your convenience,
 # https://www.gnu.org/licenses/agpl-3.0.en.html. 
 
-from flask import Flask, render_template, send_from_directory, jsonify, request, redirect
+from flask import Flask, render_template, send_from_directory, jsonify, request, redirect, Response
 
 import json
 import os
 import datetime
+import socket
 
 import getdb
 
 app = Flask(__name__, template_folder="../web")
 cd = os.path.dirname(__file__)
 config = json.load(open(x if (x := os.getenv("SSVP_CONFIG")) else f"{cd}/ssvp-config.json", "r"))
+if "port" not in config:
+    config["port"] = 80 if config["ssl"] is None else 443
+if "hostname" not in config:
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.settimeout(0)
+    med = None
+    try:
+        sock.connect(("255.255.255.254", 1))
+        med = sock.getsockname()[0]
+    except:
+        med = "localhost"
+    config["hostname"] = f"http{'s' if config['ssl'] is not None else ''}://{med}{':' + str(config['port']) if config['port'] not in (80, 443) else ''}"
 db = getdb.get_handler(config["database"])
 releaseinfo = json.load(open(f"{cd}/../release-info.json"))
 
@@ -66,6 +79,15 @@ if config.get("docs") == "local":
     @app.route("/docs/<path:path>")
     def docspath(path: str):
         return send_from_directory("../docs/_build/html/", path)
+
+
+# NOTE: text/xml is not the most correct, but it is supported by the standards
+# "Alternatively, for compatibility with widely-deployed web browsers, any of
+# these feeds can use one of the more general XML types - preferably application/xml."
+# -- https://validator.w3.org/feed/docs/warning/UnexpectedContentType.html
+@app.route("/feed.rss")
+def fetch_rss():
+    return Response(render_template("feed.rss", config=config, evs=db.fetch_events(int(request.args.get("lim", 30)), 0)), mimetype="text/xml")
 
 
 @app.route("/assets/<path:path>")
@@ -113,5 +135,5 @@ def api_v1_size_events():
 # If not run using `flask run`, we can pull options from the config file
 if __name__ == "__main__":
     app.run(host="::" if config["enable_host_ipv6"] else "0.0.0.0",
-            port=config["port"] if "port" in config else (80 if config["ssl"] is None else 443),
+            port=config["port"],
             ssl_context=tuple(config["ssl"]) if type(config["ssl"]) is list else config["ssl"])

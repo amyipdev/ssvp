@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+        <title>{{ config["instance_name"] }}</title>
+        <link>{{ config["hostname"] }}</link>
+        <description>{% if config["splash"] is defined %}{{ config["splash"] }}{% else %}Server status monitor (SSVP){% endif %}</description>
+        <language>en-us</language>
+        <copyright>(C) Copyright Amy Parker, 2023. AGPLv3 licensed.</copyright>
+        {% for ev in evs %}
+        <item>
+            <title>{{ ev["eventName"] }}: {{ ev["serverName"] }}-{{ ev["eventID"] }}</title>
+            <author>{{ ev["serverName"] }}</author>
+            <guid>ssvp-{{ ev["serverName"] }}-{{ ev["eventID"] }}</guid>
+            <link>{{ config["hostname"] }}/events</link>
+            <description>{{ ev["eventDescription"] }}</description>
+            <source url={{ '"' + config["hostname"] + '"' }}>SSVP at {{ config["hostname"] }}</source>
+            <pubDate>{{ ev["startTime"] }}</pubDate>
+        </item>
+        {% endfor %}
+    </channel>
+</rss>

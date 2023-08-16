@@ -26,7 +26,7 @@ import psycopg2
 import mysql.connector
 
 
-def unimplemented():
+def uunimplemented():
     raise Exception("ssvp: error: db module tried to use an unimplemented function")
     
 

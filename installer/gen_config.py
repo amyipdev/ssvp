@@ -34,6 +34,9 @@ print("Welcome to the SSVP configuration wizard!\n"
 
 config["enable_host_ipv6"] = input("Enable IPv6? [y]/n ") != "n"
 
+if (x := input("SSVP instance hostname: [none] ")) != "":
+    config["hostname"] = x
+
 if input("Enable SSL? [n]/y ") == "y":
     certtype = None
     while certtype not in ("adhoc", "existing"):
