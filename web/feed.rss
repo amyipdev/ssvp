@@ -13,7 +13,6 @@
             <guid>ssvp-{{ ev["serverName"] }}-{{ ev["eventID"] }}</guid>
             <link>{{ config["hostname"] }}/events</link>
             <description>{{ ev["eventDescription"] }}</description>
-            <source url={{ '"' + config["hostname"] + '"' }}>SSVP at {{ config["hostname"] }}</source>
             <pubDate>{{ ev["startTime"] }}</pubDate>
         </item>
         {% endfor %}

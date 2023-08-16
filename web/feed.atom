@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>{{ config["instance_name"] }}</title>
+    <link href={{ '"' + config["hostname"] + '"' }}></link>
+    <subtitle>{% if config["splash"] is defined %}{{ config["splash"] }}{% else %}Server status monitor (SSVP){% endif %}</subtitle>
+    <rights>(C) Copyright Amy Parker, 2023. AGPLv3 licensed.</rights>
+    {% for ev in evs %}
+    <entry>
+        <title>{{ ev["eventName"] }}: {{ ev["serverName"] }}-{{ ev["eventID"] }}</title>
+        <author>
+            <name>
+                {{ ev["serverName"] }}
+            </name>
+        </author>
+        <id>ssvp-{{ ev["serverName"] }}-{{ ev["eventID"] }}</id>
+        <link href={{ '"' + config["hostname"] + '/events"' }}></link>
+        <summary>{{ ev["eventDescription"] }}</summary>
+        <published>{{ ev["startTime"] }}</published>
+        {% if ev["endTime"] is not none %}
+        <updated>{{ ev["endTime"] }}</updated>
+        {% endif %}
+    </entry>
+    {% endfor %}
+</feed>

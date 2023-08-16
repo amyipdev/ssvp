@@ -81,13 +81,14 @@ if config.get("docs") == "local":
         return send_from_directory("../docs/_build/html/", path)
 
 
-# NOTE: text/xml is not the most correct, but it is supported by the standards
-# "Alternatively, for compatibility with widely-deployed web browsers, any of
-# these feeds can use one of the more general XML types - preferably application/xml."
-# -- https://validator.w3.org/feed/docs/warning/UnexpectedContentType.html
 @app.route("/feed.rss")
 def fetch_rss():
-    return Response(render_template("feed.rss", config=config, evs=db.fetch_events(int(request.args.get("lim", 30)), 0)), mimetype="text/xml")
+    return Response(render_template("feed.rss", config=config, evs=db.fetch_events(int(request.args.get("lim", 30)), 0)), mimetype="application/rss+xml")
+
+
+@app.route("/feed.atom")
+def fetch_atom():
+    return Response(render_template("feed.atom", config=config, evs=db.fetch_events(int(request.args.get("lim", 30)), 0)), mimetype="application/atom+xml")
 
 
 @app.route("/assets/<path:path>")
