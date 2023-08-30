@@ -168,6 +168,7 @@ class DBAPIAbstracted(DBAbstract):
         except:
             conn.commit()
             mx = st
+        mxr = mx    
         if not rc_exists:
             sql = f"insert into {self.p}day_logs \
                     (logDate, serverName, serverStatus) values \
@@ -194,7 +195,7 @@ class DBAPIAbstracted(DBAbstract):
         conn.commit()
         curr.close()
         conn.close()
-        return mx
+        return mxr
 
     def _iil(self, srv: str, status: int, conn) -> None:
         curr = conn.cursor()
