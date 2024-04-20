@@ -4,6 +4,6 @@ ping3==4.0.4
 requests==2.31.0
 psycopg2==2.9.6
 pyopenssl==23.2.0
-gunicorn==21.2.0
+gunicorn==22.0.0
 sphinx==6.2.1
 sphinx_rtd_theme==1.2.2
